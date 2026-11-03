@@ -99,12 +99,31 @@ button:focus-visible{outline:2px solid var(--xl-green);outline-offset:2px}
 .btn.ghost{background:transparent;color:var(--xl-green);border:1px solid var(--xl-green)}
 kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79a;border-bottom-width:2px;border-radius:3px;padding:0 5px}
 
-/* teams-style toast */
-.toast{position:absolute;right:10px;bottom:10px;z-index:9;background:#fff;border:1px solid #d6d9d8;border-left:4px solid #6264a7;box-shadow:0 6px 20px rgba(0,0,0,.18);padding:9px 12px;font-size:12.5px;max-width:260px;line-height:1.45;transition:transform .2s,opacity .2s}
-.toast.hide{opacity:0;transform:translateY(8px);pointer-events:none}
-.toast.warn{border-left-color:#e4a11b}
-.toast.gaze{border-left-color:var(--danger)}
-.toast b{display:block;font-size:12px;margin-bottom:2px}
+/* chat-app style notifications, stacked bottom-right of the sheet */
+.notifs{position:absolute;right:10px;bottom:10px;z-index:9;display:flex;flex-direction:column;gap:8px;align-items:flex-end;width:min(300px,calc(100% - 20px));pointer-events:none}
+.tn{pointer-events:auto;width:100%;background:#fff;border:1px solid #d9d9e3;border-radius:6px;box-shadow:0 8px 24px rgba(30,30,60,.2);font-size:12.5px;overflow:hidden;animation:tnin .28s cubic-bezier(.2,.9,.3,1.2)}
+.tn.out{animation:tnout .22s ease-in forwards}
+@keyframes tnin{from{transform:translateX(110%);opacity:0}}
+@keyframes tnout{to{transform:translateX(110%);opacity:0}}
+.tn-top{display:flex;align-items:center;gap:6px;padding:6px 8px 0 10px;color:#616161;font-size:11px}
+.tn-app{display:flex;align-items:center;gap:5px;font-weight:700;color:#4b4d8c}
+.tn-app i{width:14px;height:14px;border-radius:3px;background:#5b5fc7;color:#fff;font-style:normal;font-size:9px;font-weight:900;display:grid;place-items:center}
+.tn-top .sp{flex:1}
+.tn-x{border:0;background:transparent;color:#8a8a8a;font-size:15px;line-height:1;padding:2px 4px}
+.tn-main{display:flex;gap:10px;padding:6px 12px 10px 10px;align-items:flex-start}
+.tn-av{width:32px;height:32px;border-radius:50%;flex:none;color:#fff;font-weight:700;font-size:12px;display:grid;place-items:center;position:relative}
+.tn-av::after{content:"";position:absolute;right:-1px;bottom:-1px;width:9px;height:9px;border-radius:50%;background:#6bb700;border:2px solid #fff}
+.tn-txt{min-width:0;line-height:1.45}
+.tn-txt b{display:block;font-size:12.5px;color:#242424}
+.tn-txt span{color:#424242;overflow-wrap:anywhere}
+.tn.warn{border-left:4px solid #e4a11b}
+.tn.gaze{border-left:4px solid var(--danger)}
+.tn.gaze .tn-av::after{background:var(--danger)}
+.tn-reply{display:flex;gap:6px;flex-wrap:wrap;padding:0 10px 10px 52px}
+.tn-reply button{border:1px solid #c7c8e8;background:#f5f5ff;color:#4b4d8c;border-radius:4px;padding:4px 9px;font-size:12px;font-weight:700}
+.tn-reply button:hover{background:#e8e8ff}
+.tn-reply .fake{flex:1;border:1px solid #e0e0e0;border-radius:4px;padding:4px 8px;color:#9a9a9a;font-size:11.5px}
+.tn-sent{color:#6bb700;font-weight:700;font-size:12px;padding:0 10px 10px 52px}
 
 .sheets{display:flex;align-items:center;gap:2px;border-top:1px solid var(--grid-line);background:var(--ribbon);font-size:12.5px;padding:0 8px;overflow:hidden}
 .sheets span{padding:6px 12px;color:var(--ink-soft);white-space:nowrap}
@@ -217,7 +236,7 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
 
     <canvas class="fx" id="fx"></canvas>
     <div class="promo" id="promo" hidden></div>
-    <div class="toast hide" id="toast"><b id="tTitle"></b><span id="tBody"></span></div>
+    <div class="notifs" id="notifs" aria-live="polite"></div>
   </div>
   <div class="sheets"><span>Sheet1</span><span class="on">월급루팡</span><span>데이터</span><span>+</span></div>
   <div class="status">
@@ -300,7 +319,7 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
   let S;
   function reset(){
     S={pos:{c:3,r:4},coins:new Map(),errs:new Map(),score:0,strikes:0,min:DAY_START,running:false,boss:false,
-       phase:"idle",phaseT:4,progress:3,spawnT:.4,errT:9,chatT:12,ended:false,
+       phase:"idle",phaseT:4,progress:3,spawnT:.4,errT:9,chatT:5,ended:false,
        scan:null,combo:0,comboT:0,lunch:false,lunchDone:false,inv:0,
        rush:0,rushCd:0,magnet:0,magT:0,shown:0,rankIdx:0,spinning:false};
   }
@@ -353,13 +372,36 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
   function setFormula(t){$("formula").textContent=t}
   function setMsg(t,red){const m=$("msg");m.textContent=t;m.classList.toggle("red",!!red)}
 
-  let toastTimer;
-  function toast(title,body,kind,ms){
-    const t=$("toast");$("tTitle").textContent=title;$("tBody").textContent=body;
-    t.className="toast "+(kind||"");clearTimeout(toastTimer);
-    if(ms) toastTimer=setTimeout(()=>t.classList.add("hide"),ms);
+  const PEOPLE={"팀장님":["팀","#c4314b"],"동기 민지":["민","#8f5bd6"],"IT 헬프데스크":["IT","#2a7de1"],"재무팀 박과장":["박","#21a366"],"인사팀":["인","#d6831f"],"Outlook 일정":["📅","#0f6cbd"],"CEO 비서실":["CEO","#333333"],"루팡봇":["🥕","#ff8a3d"],"팀 회식방":["🍻","#c77700"]};
+  let nid=0;
+  function notify(o){
+    const box=$("notifs");let el=o.id&&box.querySelector('[data-id="'+o.id+'"]');
+    const who=o.who||o.title;const pp=PEOPLE[who]||[who.slice(0,1),"#6264a7"];
+    const fresh=!el;
+    if(fresh){el=document.createElement("div");el.dataset.id=o.id||("m"+(++nid));box.appendChild(el)}
+    el.className="tn "+(o.kind||"");
+    el.innerHTML='<div class="tn-top"><span class="tn-app"><i>T</i>Teams</span><span>· 지금</span><span class="sp"></span><button class="tn-x" aria-label="닫기">×</button></div>'+
+      '<div class="tn-main"><div class="tn-av" style="background:'+pp[1]+'">'+pp[0]+'</div><div class="tn-txt"><b></b><span></span></div></div>';
+    el.querySelector(".tn-txt b").textContent=o.title;el.querySelector(".tn-txt span").textContent=o.body;
+    el.querySelector(".tn-x").onclick=()=>dismiss(el);
+    if(o.replies&&o.replies.length){
+      const rp=document.createElement("div");rp.className="tn-reply";
+      o.replies.forEach(([label,fn])=>{const b=document.createElement("button");b.textContent=label;
+        b.onclick=e=>{e.currentTarget.blur();const res=fn&&S.running?fn():null;
+          rp.outerHTML='<div class="tn-sent">✓ 보냄: '+label+(res?' · '+res:'')+'</div>';SFX.ping();clearTimeout(el._t);el._t=setTimeout(()=>dismiss(el),1300)};
+        rp.appendChild(b)});
+      el.appendChild(rp);
+    } else if(o.fake){const rp=document.createElement("div");rp.className="tn-reply";rp.innerHTML='<span class="fake">답장 보내기…</span>';el.appendChild(rp)}
+    while(box.children.length>3) box.firstChild.remove();
+    clearTimeout(el._t);if(o.ms) el._t=setTimeout(()=>dismiss(el),o.ms);
+    return el;
   }
-  function hideToast(){$("toast").classList.add("hide")}
+  function dismiss(el){if(!el||!el.isConnected||el.classList.contains("out"))return;el.classList.add("out");setTimeout(()=>el.remove(),230)}
+  function toast(title,body,kind,ms){
+    const boss=kind==="warn"||kind==="gaze"||title.indexOf("팀장님")===0;
+    notify({id:boss?"boss":null,who:boss?"팀장님":(title.indexOf("점심")>=0||title.indexOf("루팡")>=0?"루팡봇":title),title,body,kind,ms});
+  }
+  function hideToast(){dismiss($("notifs").querySelector('[data-id="boss"]'))}
 
   function floatAt(c,r,text,kind){
     const el=cells[r][c],wr=wrap.getBoundingClientRect(),b=el.getBoundingClientRect();
@@ -390,7 +432,7 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
     if(S.inv>0||S.rush>0) return;
     S.strikes++;S.inv=1.5;S.combo=0;
     $("win").classList.add("alert");shake();SFX.bad();
-    const lines=["예슬님 그거 뭐예요?","방금 셀이 움직인 것 같은데…","그 파일 오늘까지죠?","잠깐 저 좀 볼까요?"];
+    const lines=["지금 그거 뭐예요?","방금 셀이 움직인 것 같은데…","그 파일 오늘까지죠?","잠깐 저 좀 볼까요?"];
     toast("팀장님",lines[(S.strikes-1)%4]+"  (경고 "+S.strikes+"/3)","gaze",1800);
     setMsg("들켰다! 경고 "+S.strikes+"/3",true);
     floatAt(S.pos.c,S.pos.r,"들킴!","bad");
@@ -533,7 +575,19 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
     if(nr&&S.score>=nr[0]){S.rankIdx++;promo("🎉 "+nr[1]+" 승진!","연봉 협상은 내일");rain(100);SFX.lunch();}
   }
 
-  const CHATS=[["동기 민지","오늘 점심 뭐 먹어? 🍜"],["동기 민지","커피 ㄱ? 1층 ㄱㄱ"],["IT 헬프데스크","프린터 또 안 된대요…"],["재무팀","그 파일 v4 언제 나와요?"],["동기 민지","팀장님 아까 한숨 쉬심 ㅋㅋ"],["Outlook","[알림] 15:00 주간회의 (필참)"],["동기 민지","퇴근하고 치맥?"]];
+  const bonus=(v,msg)=>()=>{S.score+=v;floatAt(S.pos.c,S.pos.r,"+"+won(v),"combo");burst(S.pos.c,S.pos.r,16,GOLDS,.8);SFX.coin(2);return msg||("+"+won(v))};
+  const CHATS=[
+    {w:"동기 민지",m:"커피 ㄱ? 1층 ㄱㄱ ☕",r:[["ㄱㄱ",()=>{S.magnet=6;S.magT=0;floatAt(S.pos.c,S.pos.r,"☕ 자석 6초","combo");SFX.gold();return "☕ 자석 6초"}],["바빠ㅠ",null]]},
+    {w:"재무팀 박과장",m:"그 파일 v4 언제 나와요? 오늘 중으로 부탁드려요",r:[["곧 드릴게요!",()=>{S.progress+=8;return bonus(5000)()}]]},
+    {w:"동기 민지",m:"오늘 점심 뭐 먹어? 🍜",r:[["마라탕",bonus(3000)],["김치찌개",bonus(3000)]]},
+    {w:"IT 헬프데스크",m:"3층 프린터 또 안 된대요… 확인 부탁드립니다",r:[["재부팅 해보세요",bonus(5000,"IT의 정석 +₩5,000")]]},
+    {w:"인사팀",m:"[공지] 연말정산 서류 제출 마감 D-3입니다",fake:true},
+    {w:"동기 민지",m:"팀장님 아까 한숨 쉬심 ㅋㅋ 조심해",r:[["ㅋㅋㅋ ㄹㅇ",null]]},
+    {w:"Outlook 일정",m:"15:00 주간회의 (필참) · 회의실 3B",r:[["수락",()=>{S.progress+=5;return "업무 진행률 +5%"}]]},
+    {w:"팀 회식방",m:"금요일 회식 장소 투표 🍻  고기 vs 횟집",r:[["고기!!",bonus(10000)],["횟집",bonus(10000)]]},
+    {w:"CEO 비서실",m:"[전사] 2026 연말 성과급 관련 안내 📢",r:[["열어보기",()=>{if(Math.random()<.45){const v=100000;S.score+=v;promo("💸 성과급 지급 💸","+"+won(v));rain(120);SFX.lunch();return "+"+won(v)}floatAt(S.pos.c,S.pos.r,"희망고문 ㅋ","bad");SFX.bad();return "내년에 다시 검토 예정 ㅋ"}]]},
+    {w:"동기 민지",m:"퇴근하고 치맥? 🍗",r:[["콜!!",bonus(10000,"치맥 확정 +₩10,000")]]}
+  ];
 
   function startScan(){
     const late=(S.min-DAY_START)/(DAY_END-DAY_START);
@@ -576,7 +630,7 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
     if(S.min>600&&!S.lunch){S.errT-=dt;if(S.errT<=0){spawnErr();S.errT=3+Math.random()*4}}
 
     // random chat
-    if(S.phase==="idle"&&!S.lunch){S.chatT-=dt;if(S.chatT<=0){const m=CHATS[Math.floor(Math.random()*CHATS.length)];toast(m[0],m[1],"",2200);SFX.ping();S.chatT=12+Math.random()*10}}
+    if(S.phase==="idle"&&!S.lunch){S.chatT-=dt;if(S.chatT<=0){const m=CHATS[Math.floor(Math.random()*CHATS.length)];notify({who:m.w,title:m.w,body:m.m,replies:m.r,fake:m.fake,ms:m.r?6000:3200});SFX.ping();setTimeout(()=>beep(1318,.09,"sine",.05),110);S.chatT=7+Math.random()*7}}
 
     // boss sweep
     if(!S.lunch){
