@@ -268,8 +268,65 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
 .cm-ask{z-index:12}
 .intro-skip{z-index:13;bottom:auto !important;top:calc(env(safe-area-inset-top,0px) + 14px)}
 
+/* taskbar + outlook window */
+.taskbar{max-width:920px;margin:10px auto 0;display:flex;align-items:center;gap:6px;background:#1f2421;padding:6px;border-radius:6px;overflow-x:auto}
+.tb{display:flex;align-items:center;gap:8px;background:transparent;border:0;color:#cfd6d2;padding:7px 12px;border-radius:4px;font-size:13px;white-space:nowrap;flex:none}
+.tb:hover{background:#2d3531}
+.tb.on{background:#3a423e;color:#fff;box-shadow:inset 0 -2px 0 #3ddc84}
+.tb i{width:18px;height:18px;border-radius:3px;display:grid;place-items:center;font-style:normal;font-weight:900;font-size:11px;color:#fff}
+.tb i.xl{background:#217346}.tb i.ol{background:#0f6cbd}
+.tb .badge{background:#c4314b;color:#fff;font-size:10.5px;font-weight:700;border-radius:8px;padding:0 5px;min-width:16px;text-align:center}
+.tb .badge:empty{display:none}
+.taskbar .sp{flex:1}
+.tbclock{color:#cfd6d2;font-size:12px;font-variant-numeric:tabular-nums;padding:0 8px;white-space:nowrap}
+.olw .titlebar{background:#0f6cbd}
+.olw .titlebar .logo{color:#0f6cbd}
+.olw .clock{background:#0a4f8f}
+.olw .ribbon .tabs .on{color:#0f6cbd;border-bottom-color:#0f6cbd}
+.olw .status{background:#0f6cbd}
+.olw .progress .bar i{background:#0f6cbd}
+.olbody{position:relative;display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);height:440px}
+.ollist{overflow-y:auto;border-right:1px solid var(--grid-line);background:#fff}
+.olfolder{font-size:11.5px;font-weight:700;color:#616161;padding:8px 12px;border-bottom:1px solid var(--grid-line);background:#f7f8fa;display:flex;justify-content:space-between}
+.olitem{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:1px 8px;padding:8px 10px;border-bottom:1px solid #f0f1f3;cursor:pointer;border-left:3px solid transparent;background:#fff;width:100%;text-align:left;font-family:inherit;border-top:0;border-right:0;animation:olin .25s ease-out}
+@keyframes olin{from{opacity:0;transform:translateY(-6px)}}
+.olitem:hover{background:#f3f7fc}
+.olitem.unread{border-left-color:#0f6cbd}
+.olitem.unread .s{font-weight:700;color:#0f5aa6}
+.olitem.sel{background:#cfe4fa}
+.olitem .ic{grid-row:span 2;font-size:16px;line-height:1.2}
+.olitem .f{font-size:12.5px;font-weight:700;color:#242424;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.olitem .t{font-size:11px;color:#7a7a7a;font-variant-numeric:tabular-nums}
+.olitem .s{grid-column:2/4;font-size:12px;color:#424242;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.olread{position:relative;padding:16px 18px;overflow-y:auto;background:#fafbfc;min-width:0}
+.olempty{height:100%;display:grid;place-items:center;color:#9a9a9a;font-size:13px;text-align:center;line-height:1.7}
+.olread h4{margin:0 0 6px;font-size:17px;line-height:1.35;text-wrap:balance;color:#242424}
+.olmeta{display:flex;align-items:center;gap:8px;font-size:12px;color:#616161;margin-bottom:12px}
+.olmeta .av{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:12px;flex:none}
+.olmail{background:#fff;border:1px solid #e6e8eb;border-radius:4px;padding:14px;font-size:13.5px;line-height:1.65;color:#333}
+.olbanner{font-size:44px;text-align:center;padding:8px 0 4px}
+.olact{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.olbtn{border:1px solid #b4d3f0;background:#eef5fc;color:#0f5aa6;border-radius:4px;padding:7px 12px;font-size:12.5px;font-weight:700}
+.olbtn:hover{background:#dcebfa}
+.olbtn.primary{background:#0f6cbd;color:#fff;border-color:#0f6cbd}
+.olrd{margin-top:12px;font-size:12px;color:#7a5a00;font-weight:700}
+.olrd .bar{height:8px;background:#f1e6c8;border-radius:4px;overflow:hidden;margin-top:5px}
+.olrd .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffd23f,#ff8a3d)}
+.olcompose .row{display:flex;gap:8px;border-bottom:1px solid #e6e8eb;padding:6px 0;font-size:12.5px;color:#616161}
+.olcompose .row b{color:#242424;font-weight:500}
+.olcompose .txt{margin-top:10px;background:#fff;border:1px solid #e6e8eb;border-radius:4px;padding:12px;min-height:150px;font-size:13.5px;line-height:1.7;white-space:pre-wrap;color:#242424}
+.olcompose .txt::after{content:"|";animation:blink 1s steps(1) infinite;color:#0f6cbd}
+@keyframes blink{50%{opacity:0}}
+.olhint{font-size:11.5px;color:#7a7a7a;margin-top:10px}
+.olfloat{position:absolute;left:50%;top:40%;transform:translate(-50%,0);font-weight:900;font-size:18px;color:#b86e00;white-space:nowrap;pointer-events:none;animation:floatup 1s ease-out forwards;z-index:7;text-shadow:0 1px 0 #fff}
+.olfloat.bad{color:var(--danger)}
+@media (max-width:620px){
+  .olbody{grid-template-columns:1fr;grid-template-rows:210px minmax(0,1fr);height:560px}
+  .ollist{border-right:0;border-bottom:1px solid var(--grid-line)}
+}
+body.app-outlook .dpad{visibility:hidden}
 /* before clock-in, the Excel window does not exist yet */
-body.pre .win,body.pre .pad{visibility:hidden}
+body.pre .win,body.pre .pad,body.pre .taskbar{visibility:hidden}
 body.pre{background:#030504}
 /* epic title screen */
 .title{position:fixed;inset:0;z-index:120;background:radial-gradient(ellipse at 50% 62%,#1b2822 0%,#0a0f0d 55%,#030504 100%);color:#e9efe9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;overflow:hidden;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12vh;transition:opacity .6s}
@@ -383,6 +440,35 @@ body.pre{background:#030504}
   <div class="t-sub" id="tSub" aria-live="polite"></div>
   <div class="t-foot">월급루팡.xlsx · 딴짓연구소 @ttanjit.lab · Enter</div>
   <div class="t-flash" id="tFlash"></div>
+</div>
+
+<div class="win olw" id="olwin" hidden>
+  <div class="titlebar">
+    <div class="logo">O</div>
+    <div class="fname">받은 편지함 - lupang@lupang.co.kr - Outlook</div>
+    <div class="spacer"></div>
+    <div class="clock" id="olClock">09:00</div>
+  </div>
+  <div class="ribbon">
+    <div class="tabs"><span>파일</span><span class="on">홈</span><span>보내기/받기</span><span>폴더</span><span>보기</span></div>
+    <div class="progress">메일 처리율 <div class="bar"><i id="olPbar"></i></div><b id="olPtext">0%</b></div>
+  </div>
+  <div class="olbody" id="olbody">
+    <div class="ollist" id="ollist"></div>
+    <div class="olread" id="olread"></div>
+  </div>
+  <div class="status">
+    <span class="msg" id="olMsg">받은 편지함</span>
+    <span>경고 <b class="strikes" id="olStrikes">○○○</b></span>
+    <span>합계: <b id="olSum">0</b></span>
+  </div>
+</div>
+
+<div class="taskbar" id="taskbar">
+  <button class="tb on" data-app="excel" id="tbExcel"><i class="xl">X</i>월급루팡.xlsx</button>
+  <button class="tb" data-app="outlook" id="tbOutlook"><i class="ol">O</i>Outlook<span class="badge" id="olBadge"></span></button>
+  <span class="sp"></span>
+  <span class="tbclock" id="tbClock">09:00</span>
 </div>
 
 <div class="intro" id="intro" hidden data-stage="subway">
@@ -580,7 +666,7 @@ body.pre{background:#030504}
       for(let z=-6.3;z<=6.3;z+=.7){const h=new THREE.Mesh(new THREE.TorusGeometry(.06,.012,6,12),M(0xf2f2f2));h.position.set(x,1.9,z);sc.add(h)}});
     B(3.2,2.4,.1,M(0xd6dcda),0,1.2,-8.6);
     const dl1=B(.7,1.9,.05,M(0x9aa3a0,{metalness:.5}),-.36,.95,-8.52),dl2=B(.7,1.9,.05,M(0x9aa3a0,{metalness:.5}),.36,.95,-8.52);
-    const led=new THREE.Mesh(new THREE.PlaneGeometry(1.6,.24),new THREE.MeshBasicMaterial({map:tex(640,96,(g)=>{g.fillStyle="#0b0b0b";g.fillRect(0,0,640,96);g.fillStyle="#ff7a3d";g.font='700 46px "Noto Sans KR",sans-serif';g.textBaseline="middle";g.fillText("9호선 급행 ▶ 다음 역: 루팡역",20,50)})}));
+    const led=new THREE.Mesh(new THREE.PlaneGeometry(1.6,.24),new THREE.MeshBasicMaterial({map:tex(640,96,(g)=>{g.fillStyle="#0b0b0b";g.fillRect(0,0,640,96);g.fillStyle="#ff7a3d";g.font='700 46px "Noto Sans KR",sans-serif';g.textBaseline="middle";g.fillText("9호선 급행 ▶ 다음 역: 노비역",20,50)})}));
     led.position.set(0,2.12,-8.54);sc.add(led);
     const crowd=[];
     for(let i=0;i<24;i++){let x,z;do{x=(Math.random()-.5)*1.6;z=-7.6+Math.random()*13}while(Math.hypot(x,z-1.4)<.8);
@@ -763,7 +849,7 @@ body.pre{background:#030504}
     setScene("subway");stageLabel("STAGE 1 · 9호선 급행","🚇","subway");
     CAM.p=[0,1.6,1.4];CAM.l=[0,1.5,-6];sway=1;
     await sleep(60);await fadeTo(0,600);if(!alive())return;
-    sub("이번 열차는 급행 열차입니다. 다음 정차역은… 사람 많은 역입니다");beep(988,.15,"sine",.05);setTimeout(()=>beep(784,.2,"sine",.05),180);
+    sub("이번 열차는 급행 열차입니다. 다음 정차역은 환승지옥역입니다");beep(988,.15,"sine",.05);setTimeout(()=>beep(784,.2,"sine",.05),180);
     await sleep(2300);if(!alive())return;
     sub("🚪 문이 열립니다. 사람들이 밀려 들어옵니다!!");shake();beep(90,.5,"sawtooth",.08,60);
     if(cur)tween(1,k=>cur.push(ease(k)));
@@ -776,7 +862,7 @@ body.pre{background:#030504}
     sub("…뭔가 심상치 않은 기운이 느껴진다");camTo([0,1.6,1.4],[.1,1.5,-2],.6);await sleep(1000);if(!alive())return;sub("");
     const o1=await choice(v.tag,v.title,v.text,v.opts);if(!alive())return;
     apply(o1);sub(o1.r);await sleep(1900);if(!alive())return;
-    sub("이번 역은 루팡역, 루팡역입니다. 내리실 문은 앞쪽입니다");W.min+=15;hud();
+    sub("이번 역은 노비역, 노비역입니다. 노비 여러분은 모두 내리시기 바랍니다");W.min+=15;hud();
     if(cur)tween(.8,k=>cur.doors(ease(k)));
     await camTo([0,1.6,-7.6],[0,1.5,-14],2.2);if(!alive())return;
     await fadeTo(1,450);sub("");
@@ -921,6 +1007,7 @@ body.pre{background:#030504}
     S={pos:{c:3,r:4},coins:new Map(),errs:new Map(),score:0,strikes:0,min:DAY_START,running:false,boss:false,
        phase:"idle",phaseT:4,progress:3,spawnT:.4,errT:9,chatT:5,ended:false,
        scan:null,combo:0,comboT:0,lunch:false,lunchDone:false,inv:0,mtg:false,mtgRem:0,
+       app:"excel",mails:[],sel:null,readT:0,compose:false,composeT:0,mailT:1.5,mailId:0,olDone:0,olDirty:true,
        rush:0,rushCd:0,magnet:0,magT:0,shown:0,rankIdx:0,spinning:false};
   }
   reset();
@@ -963,7 +1050,10 @@ body.pre{background:#030504}
     $("ref").textContent=ref();
     $("sum").textContent=Math.round(S.shown).toLocaleString("ko-KR");$("sum").classList.toggle("bump",S.score-S.shown>500);
     $("strikes").textContent="●".repeat(S.strikes)+"○".repeat(3-S.strikes);
-    $("clock").textContent=fmtTime(S.min);
+    $("clock").textContent=fmtTime(S.min);$("olClock").textContent=$("tbClock").textContent=fmtTime(S.min);
+    $("olSum").textContent=Math.round(S.shown).toLocaleString("ko-KR");$("olStrikes").textContent="●".repeat(S.strikes)+"○".repeat(3-S.strikes);
+    $("olwin").classList.toggle("alert",$("win").classList.contains("alert"));$("olwin").classList.toggle("rush",$("win").classList.contains("rush"));
+    olRender();
     $("pbar").style.width=Math.min(S.progress,99)+"%";
     $("ptext").textContent=Math.floor(Math.min(S.progress,99))+"%";
   }
@@ -1032,7 +1122,8 @@ body.pre{background:#030504}
 
   function caught(){
     if(S.inv>0||S.rush>0) return;
-    S.strikes++;S.inv=1.5;S.combo=0;
+    S.strikes++;
+    if(S.app==="outlook"){const m=olMail(S.sel);if(m&&m.fun){S.mails=S.mails.filter(x=>x!==m);S.sel=null;S.olDirty=true}olFloat("들킴! 딴짓 메일 강제 삭제","bad")}S.inv=1.5;S.combo=0;
     $("win").classList.add("alert");shake();SFX.bad();
     const lines=["지금 그거 뭐예요?","방금 셀이 움직인 것 같은데…","그 파일 오늘까지죠?","잠깐 저 좀 볼까요?"];
     toast("팀장님",lines[(S.strikes-1)%4]+"  (경고 "+S.strikes+"/3)","gaze",1800);
@@ -1058,7 +1149,7 @@ body.pre{background:#030504}
     $("bosskey").firstChild.textContent=on?"루팡 모드 ":"업무 모드";
     setFormula(on?"=GETPIVOTDATA(\"매출\", $A$3, \"채널\", \"백화점\")":"=IF(팀장님=\"자리비움\", 루팡(), 일하는척())");
     if(on) setMsg("업무 모드: 열심히 일하는 중");
-    else if(S.phase==="gaze"&&inScan(S.pos.c,S.pos.r)) caught();
+    else if(S.app==="excel"&&S.phase==="gaze"&&inScan(S.pos.c,S.pos.r)) caught();
   }
 
   function freeCell(){
@@ -1177,6 +1268,144 @@ body.pre{background:#030504}
     if(nr&&S.score>=nr[0]){S.rankIdx++;promo("🎉 "+nr[1]+" 승진!","연봉 협상은 내일");rain(100);SFX.lunch();}
   }
 
+  // ---------- Outlook window ----------
+  const WORK=[["재무팀 박과장","RE: RE: FW: 매출실적_최종_v3 확인 요청","첨부파일 다시 확인 부탁드립니다. 숫자가 또 안 맞네요."],
+    ["팀장님","[긴급] 오늘 중 회신 바랍니다","지난주 건 진행 상황 공유 부탁드립니다. 오늘 중으로요."],
+    ["인사팀","[필독] 연말정산 간소화 서비스 안내","기한 내 서류 제출 부탁드립니다."],
+    ["총무팀","[공지] 11월 소방 훈련 일정 안내","14:00 전 직원 1층 로비 집결"],
+    ["IT 헬프데스크","[티켓 #4821] 3층 프린터 오류 접수","담당자 배정 부탁드립니다."],
+    ["구매팀","[결재요청] 사무용품 구매 품의서","결재 부탁드립니다. (포스트잇 300개)"],
+    ["Global Team","[Action Required] Q4 forecast update","Please update the file by EOD."],
+    ["보안팀","[필수] 비밀번호 변경 기한 D-1","90일마다 변경해 주세요."],
+    ["재무팀 박과장","RE: 법인카드 영수증 누락 건","3건 누락입니다. 확인 부탁드려요."],
+    ["팀장님","내일 회의 자료 미리 공유 부탁해요","오전 중으로 부탁합니다."]];
+  const FUN=[["🛍","쇼핑 알림","[블프] 장바구니 상품 90% 세일 마감 임박","담아두신 상품이 지금 90% 할인 중! 남은 시간 00:09:59 🔥"],
+    ["📈","증권 알림","보유 종목 +12.4% 급등 🚀","당근전자가 상한가 근접 중입니다. 수익률 확인하기 ›"],
+    ["🍗","배달 앱","치킨 5,000원 할인 쿠폰 도착","오늘 저녁은 치킨? 쿠폰 사용 기한은 오늘 자정까지!"],
+    ["📺","웹툰","관심 웹툰 최신화 업데이트!","'퇴사하겠습니다' 132화가 올라왔습니다. 지금 보러 가기 ›"],
+    ["✈️","항공권 특가","제주 왕복 9,900원 특가 오픈","이번 주말 떠나볼까요? 선착순 100석 🌴"],
+    ["🎮","게임","출석 보상 7일차 도착 🎁","전설 등급 상자가 우편함에 도착했습니다."],
+    ["💬","동기 민지","(개인) ㅋㅋㅋ 이거 봐봐","팀장님 닮은 고양이 짤 ㅋㅋㅋㅋ 🐱 절대 회사에서 열지 마"],
+    ["🏠","부동산 앱","관심 단지 실거래가 업데이트","관심 등록한 단지에 새 실거래가가 등록되었습니다."],
+    ["🎰","복권","이번 주 로또 당첨 번호 안내","혹시…? 번호 확인하기 ›"]];
+  const READ_SEC=3;
+  function olMail(id){return S.mails.find(m=>m.id===id)}
+  function olDanger(){const m=olMail(S.sel);return !S.compose&&!!m&&m.fun}
+  function olSafe(){const m=olMail(S.sel);return !!m&&!m.fun}
+  function olAdd(fun){
+    const d=fun?FUN[Math.floor(Math.random()*FUN.length)]:WORK[Math.floor(Math.random()*WORK.length)];
+    const m=fun?{id:++S.mailId,fun:true,ico:d[0],from:d[1],subj:d[2],body:d[3]}:{id:++S.mailId,fun:false,ico:"📎",from:d[0],subj:d[1],body:d[2]};
+    m.time=fmtTime(S.min);m.unread=true;S.mails.unshift(m);S.olDirty=true;
+    if(S.app==="outlook") beep(fun?1175:784,.06,"sine",.035);
+    return m;
+  }
+  function olSeed(){S.mails=[];olAdd(false);olAdd(true);olAdd(false);S.sel=null;S.olDirty=true}
+  function olFloat(t,kind){const r=$("olread");if(!r)return;const f=document.createElement("div");f.className="olfloat "+(kind||"");f.textContent=t;r.appendChild(f);setTimeout(()=>f.remove(),1000)}
+  function switchApp(app,quiet){
+    if(S.app===app&&!quiet) return;
+    if(S.boss) setBoss(false);
+    S.compose=false;S.app=app;
+    $("win").hidden=app!=="excel";$("olwin").hidden=app!=="outlook";
+    $("tbExcel").classList.toggle("on",app==="excel");$("tbOutlook").classList.toggle("on",app==="outlook");
+    document.body.classList.toggle("app-outlook",app==="outlook");
+    const host=app==="outlook"?$("olbody"):wrap;host.appendChild($("notifs"));host.appendChild($("promo"));
+    $("bosskey").firstChild.textContent=app==="outlook"?"메일 작성 ":"업무 모드";
+    $("bosskey").querySelector("small").textContent=app==="outlook"?"Esc · 팀장님 오면 작성하는 척":"Esc · 팀장님 오면 누르기";
+    if(!quiet){beep(app==="outlook"?660:520,.05,"square",.03);if(S.phase==="gaze"){if(app==="excel"&&inScan(S.pos.c,S.pos.r)&&!S.boss)caught();if(app==="outlook"&&olDanger())caught()}}
+    S.olDirty=true;
+  }
+  function olSelect(id){
+    const m=olMail(id);if(!m) return;
+    S.compose=false;S.sel=id;S.readT=0;if(m.unread){m.unread=false}
+    S.olDirty=true;beep(m.fun?988:520,.04,"square",.03);
+    if(S.phase==="gaze"&&m.fun) caught();
+  }
+  function olStep(d){
+    if(!S.mails.length) return;
+    let i=S.mails.findIndex(m=>m.id===S.sel);i=i<0?0:Math.max(0,Math.min(S.mails.length-1,i+d));olSelect(S.mails[i].id);
+  }
+  function olArchive(){
+    const m=olMail(S.sel);if(!m) return;
+    const i=S.mails.indexOf(m);S.mails.splice(i,1);
+    if(!m.fun){S.score+=2000;S.olDone++;S.progress+=2;olFloat("📁 보관 +₩2,000");SFX.coin(1)}
+    else olFloat("🗑 아까운 딴짓 메일…");
+    const nx=S.mails[Math.min(i,S.mails.length-1)];S.sel=null;if(nx&&!nx.fun){S.sel=nx.id;nx.unread=false}
+    S.olDirty=true;
+  }
+  function toggleCompose(){
+    if(!S.running) return;
+    S.compose=!S.compose;S.composeT=0;S.olDirty=true;
+    $("bosskey").firstChild.textContent=S.compose?"받은 편지함 ":"메일 작성 ";
+    if(S.compose) beep(440,.05,"square",.03);
+  }
+  const DRAFT="팀장님, 안녕하세요.\n\n금주 업무 진행 상황 공유드립니다.\n\n1. 매출실적 파일 v4 업데이트 진행 중 (90%)\n2. 시스템 개선 요청 건 검토 완료\n3. 차주 일정 조율 중\n\n추가로 궁금하신 점 있으시면 말씀 부탁드립니다.\n감사합니다.";
+  function olTick(dt){
+    if(!S.running) return;
+    S.mailT-=dt;
+    if(S.mailT<=0){
+      const funP=S.lunch||S.mtg?.75:.4;olAdd(Math.random()<funP);
+      S.mailT=(S.lunch?.9:1.6)+Math.random()*1.1;
+      const unreadWork=S.mails.filter(m=>!m.fun).length;
+      if(unreadWork>=9){
+        let n=0;for(let i=S.mails.length-1;i>=0&&n<4;i--){if(!S.mails[i].fun&&S.mails[i].id!==S.sel){S.mails.splice(i,1);n++}}
+        const loss=Math.min(S.score,20000);S.score-=loss;shake();SFX.bad();
+        toast("팀장님","메일 확인 안 하세요? 회신이 하나도 없네요 (-₩"+loss.toLocaleString("ko-KR")+")","warn",2600);
+        if(S.app==="outlook")olFloat("📬 받은편지함 폭발 -₩"+loss.toLocaleString("ko-KR"),"bad");
+      }
+      if(S.mails.length>14) S.mails.length=14;
+      S.olDirty=true;
+    }
+    if(S.app==="outlook"&&S.compose){S.composeT+=dt;if(S.boss===false)S.progress+=dt*1.2}
+    const m=olMail(S.sel);
+    if(S.app==="outlook"&&m&&m.fun&&!S.compose){
+      const before=Math.floor(S.readT);S.readT+=dt;
+      if(Math.floor(S.readT)!==before&&S.readT<READ_SEC){S.score+=4000;olFloat("+₩4,000 루팡 중");SFX.coin(Math.floor(S.readT))}
+      if(S.readT>=READ_SEC){
+        S.mails=S.mails.filter(x=>x!==m);S.sel=null;S.score+=20000;
+        olFloat("📖 정독 완료 +₩20,000","");SFX.gold();rain(40);S.olDirty=true;
+      }
+    }
+  }
+  let olLastSel=-1,olLastCompose=null;
+  function olRender(){
+    const unread=S.mails.filter(m=>m.unread).length;
+    $("olBadge").textContent=unread?String(unread):"";
+    if(S.app!=="outlook"){return}
+    const pct=Math.min(99,Math.round(S.olDone/(S.olDone+S.mails.filter(m=>!m.fun).length+1)*100));
+    $("olPbar").style.width=pct+"%";$("olPtext").textContent=pct+"%";
+    const m=olMail(S.sel);
+    $("olMsg").textContent="받은 편지함 "+S.mails.length+"개 · 읽지 않음 "+unread+(S.phase==="gaze"?" · 👀 감시 중":S.phase==="warn"?" · 팀장님 기척":"");
+    $("olMsg").classList.toggle("red",S.phase!=="idle");
+    if(S.olDirty){
+      S.olDirty=false;
+      const list=$("ollist");list.innerHTML='<div class="olfolder"><span>받은 편지함</span><span>'+S.mails.length+'</span></div>';
+      S.mails.forEach(x=>{const b=document.createElement("button");b.className="olitem"+(x.unread?" unread":"")+(x.id===S.sel?" sel":"")+(x.fun?" fun":"");
+        b.innerHTML='<span class="ic"></span><span class="f"></span><span class="t"></span><span class="s"></span>';
+        b.querySelector(".ic").textContent=x.ico;b.querySelector(".f").textContent=x.from;b.querySelector(".t").textContent=x.time;b.querySelector(".s").textContent=x.subj;
+        b.onclick=()=>olSelect(x.id);list.appendChild(b)});
+      olLastSel=-1;olLastCompose=null;
+    }
+    const rd=$("olread");
+    if(S.compose){
+      if(olLastCompose!==true){olLastCompose=true;olLastSel=-1;
+        rd.innerHTML='<div class="olcompose"><div class="row">받는 사람 <b>팀장님</b></div><div class="row">제목 <b>RE: 주간 업무 보고</b></div><div class="txt" id="olTxt"></div><div class="olhint">✍️ 열심히 메일 쓰는 척 중… Esc로 받은 편지함 복귀</div></div>'}
+      const n=Math.min(DRAFT.length,Math.floor(S.composeT*14));const t=$("olTxt");if(t&&t.textContent.length!==n)t.textContent=DRAFT.slice(0,n);
+      return;
+    }
+    if(olLastCompose!==false||olLastSel!==(m?m.id:0)){
+      olLastCompose=false;olLastSel=m?m.id:0;
+      if(!m){rd.innerHTML='<div class="olempty">메일을 선택하세요<br><small>📎 업무 메일은 보관 · 🛍 딴짓 메일은 몰래 정독<br>팀장님 오면 Esc로 메일 작성하는 척</small></div>';return}
+      const pp=PEOPLE[m.from]||[m.from.slice(0,1),m.fun?"#ff8a3d":"#0f6cbd"];
+      rd.innerHTML='<h4></h4><div class="olmeta"><span class="av" style="background:'+pp[1]+'">'+pp[0]+'</span><span><b class="fr"></b> · '+m.time+'</span></div>'+
+        '<div class="olmail">'+(m.fun?'<div class="olbanner"></div>':'')+'<div class="bd"></div></div>'+
+        (m.fun?'<div class="olrd">🤫 몰래 정독 중… 다 읽으면 +₩20,000<div class="bar"><i id="olRbar"></i></div></div>':'<div class="olact"><button class="olbtn primary" id="olArc">📁 보관 (Delete)</button><button class="olbtn" id="olRep">↩ 회신</button></div>');
+      rd.querySelector("h4").textContent=m.subj;rd.querySelector(".fr").textContent=m.from;rd.querySelector(".bd").textContent=m.body;
+      if(m.fun)rd.querySelector(".olbanner").textContent=m.ico;
+      else{$("olArc").onclick=olArchive;$("olRep").onclick=()=>{S.progress+=3;olFloat("↩ 회신 완료 (대충)");olArchive()}}
+    }
+    if(m&&m.fun){const b=$("olRbar");if(b)b.style.width=Math.min(100,S.readT/READ_SEC*100)+"%"}
+  }
+
   const bonus=(v,msg)=>()=>{S.score+=v;floatAt(S.pos.c,S.pos.r,"+"+won(v),"combo");burst(S.pos.c,S.pos.r,16,GOLDS,.8);SFX.coin(2);return msg||("+"+won(v))};
   const CHATS=[
     {w:"동기 민지",m:"커피 ㄱ? 1층 ㄱㄱ ☕",r:[["ㄱㄱ",()=>{S.magnet=6;S.magT=0;floatAt(S.pos.c,S.pos.r,"☕ 자석 6초","combo");SFX.gold();return "☕ 자석 6초"}],["바빠ㅠ",null]]},
@@ -1205,7 +1434,7 @@ body.pre{background:#030504}
     S.scan={type,size,dir,start:dir>0?0:max-size,max,stepT:0,speed:Math.max(.32,.55-late*.2)};
     S.phase="warn";S.phaseT=1.3-late*.4;
     SFX.warn();
-    toast("팀장님",type==="row"?"행 단위로 훑어보실 예정… 저벅저벅":"열 단위로 훑어보실 예정… 저벅저벅","warn");
+    toast("팀장님",S.app==="outlook"?"내 자리 쪽으로 걸어오는 중… 저벅저벅 (딴짓 메일 닫아!)":type==="row"?"행 단위로 훑어보실 예정… 저벅저벅":"열 단위로 훑어보실 예정… 저벅저벅","warn");
     setMsg("팀장님 기척 감지 · 노란 줄 주의",true);
   }
 
@@ -1240,6 +1469,8 @@ body.pre{background:#030504}
     S.errs.forEach((v,k)=>{v.life-=dt;if(v.life<=0)S.errs.delete(k)});
     S.spawnT-=dt;if(S.spawnT<=0){spawnCoin();S.spawnT=S.rush>0?.08:S.lunch?.18:.9+Math.random()*1.1}
     dopamineTick(dt);
+    olTick(dt);
+    if(S.app==="outlook"&&S.phase==="gaze"&&olDanger()) caught();
     if(S.min>600&&!S.lunch){S.errT-=dt;if(S.errT<=0){spawnErr();S.errT=3+Math.random()*4}}
 
     // random chat
@@ -1254,17 +1485,19 @@ body.pre{background:#030504}
         $("win").classList.add("alert");SFX.gaze();
         toast("팀장님이 화면을 훑는 중 👀","빨간 줄을 피하거나 Esc로 위장","gaze");
         setMsg("감시 중 · 빨간 줄 피하기",true);
-        if(!S.boss&&inScan(S.pos.c,S.pos.r)) caught();
+        if(S.app==="excel"&&!S.boss&&inScan(S.pos.c,S.pos.r)) caught();
+        if(S.app==="outlook"&&olDanger()) caught();
+        if(S.app==="outlook")toast("팀장님이 화면을 보는 중 👀","딴짓 메일 닫아! 업무 메일 열거나 Esc로 메일 작성","gaze");
       } else if(S.phase==="gaze"&&S.scan){
         const s=S.scan;s.stepT+=dt;
         if(s.stepT>=s.speed){
           s.stepT=0;s.start+=s.dir;
           if(s.start<0||s.start+s.size>s.max){
-            const wasBoss=S.boss;
-            if(!wasBoss){S.score+=5000;floatAt(S.pos.c,S.pos.r,"+₩5,000 회피","");}
+            const wasBoss=S.app==="excel"?S.boss:(S.compose||olSafe());
+            if(!wasBoss){S.score+=5000;if(S.app==="excel")floatAt(S.pos.c,S.pos.r,"+₩5,000 회피","");else olFloat("+₩5,000 회피")}
             if(!wasBoss) hideToast();
             endScan(wasBoss);
-          } else if(!S.boss&&inScan(S.pos.c,S.pos.r)) caught();
+          } else if(S.app==="excel"&&!S.boss&&inScan(S.pos.c,S.pos.r)) caught();
         }
       }
     }
@@ -1277,7 +1510,7 @@ body.pre{background:#030504}
   function rank(s){return s>=2500000?"전설의 루팡":s>=1500000?"부장급 루팡":s>=800000?"과장급 루팡":s>=300000?"대리급 루팡":"신입 루팡"}
 
   function end(win){
-    S.running=false;S.ended=true;S.scan=null;setBoss(false);S.lunch=false;S.rush=0;S.magnet=0;$("win").classList.remove("rush");if(win)rain(180);
+    S.running=false;S.ended=true;S.scan=null;setBoss(false);switchApp("excel",true);S.lunch=false;S.rush=0;S.magnet=0;$("win").classList.remove("rush");if(win)rain(180);
     $("titlebar").classList.remove("lunch");$("saved").textContent="· 자동 저장됨";
     $("win").classList.remove("alert");hideToast();
     win?SFX.lunch():SFX.bad();
@@ -1302,7 +1535,8 @@ body.pre{background:#030504}
 
   function start(r){
     document.body.classList.remove("pre");
-    reset();$("note").hidden=true;S.running=true;
+    reset();$("note").hidden=true;S.running=true;switchApp("excel",true);
+    olSeed();
     setBoss(false);setMsg("팀장님 자리 비움 · 루팡 가능");setFormula("=출근(09:00)");
     SFX.ping();spawnCoin();spawnCoin();render();
     if(r&&r.ok){
@@ -1362,6 +1596,13 @@ body.pre{background:#030504}
   document.addEventListener("keydown",e=>{
     if(window.LupangIntro&&window.LupangIntro.active) return;
     if(titleOn){if(e.key==="Enter"){e.preventDefault();goWork()}return}
+    if(S.running&&e.key==="Tab"){e.preventDefault();switchApp(S.app==="excel"?"outlook":"excel");return}
+    if(S.app==="outlook"&&S.running){
+      if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();olStep(e.key==="ArrowDown"?1:-1);return}
+      if(e.key==="Delete"||e.key==="Backspace"||e.key==="a"){e.preventDefault();olArchive();return}
+      if(e.key==="Escape"){e.preventDefault();toggleCompose();return}
+      return;
+    }
     const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]}[e.key];
     if(m){e.preventDefault();move(m[0],m[1]);return}
     if(e.key==="Escape"){e.preventDefault();setBoss(!S.boss)}
@@ -1370,7 +1611,8 @@ body.pre{background:#030504}
   document.querySelectorAll(".dpad button").forEach(b=>{
     b.addEventListener("pointerdown",e=>{e.preventDefault();const [x,y]=b.dataset.d.split(",").map(Number);move(x,y)});
   });
-  $("bosskey").onclick=()=>setBoss(!S.boss);
+  $("bosskey").onclick=()=>{if(S.app==="outlook")toggleCompose();else setBoss(!S.boss)};
+  $("tbExcel").onclick=()=>switchApp("excel");$("tbOutlook").onclick=()=>switchApp("outlook");
   let sx=0,sy=0;
   grid.addEventListener("pointerdown",e=>{sx=e.clientX;sy=e.clientY});
   grid.addEventListener("pointerup",e=>{
