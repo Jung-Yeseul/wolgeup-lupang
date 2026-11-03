@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta property="og:title" content="월급루팡.xlsx">
-<meta property="og:description" content="출근하시겠습니까? 업무용 엑셀로 위장한 딴짓 게임 🥕">
+<meta property="og:description" content="출근하시겠습니까? 지옥철부터 팀장님 엘리베이터까지, 직장인 출근 생존 게임 🥕">
 <style>body{margin:0}[hidden]{display:none!important}</style>
 <title>월급루팡.xlsx</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -209,6 +209,65 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
 .idcard.fly{animation:cardfly .35s ease-in forwards}
 @keyframes cardfly{to{transform:translate(-10%,-260px) scale(.3) rotate(-12deg);opacity:0}}
 .intro-fade{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .5s}
+/* 3D commute */
+.intro{position:fixed;inset:0;z-index:100;background:#141a18;overflow:hidden;color:#fff;font-family:var(--font)}
+.intro .stage,.intro .stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.intro.cm-shake{animation:tshake .4s}
+.cm-fallback{position:absolute;inset:0;display:none;place-items:center;pointer-events:none}
+.intro .stage{pointer-events:none}
+.intro.no3d .cm-fallback{display:grid}
+.intro.no3d[data-stage="subway"]{background:linear-gradient(180deg,#1d2624,#3b4744)}
+.intro.no3d[data-stage="street"]{background:linear-gradient(180deg,#9fb9c9,#5d7282)}
+.intro.no3d[data-stage="lobby"]{background:linear-gradient(180deg,#e3e8e5,#aab3ae)}
+.fb-emoji{font-size:34vmin;opacity:.3;filter:grayscale(.3)}
+.cm-hud{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));z-index:4}
+.cm-stage{font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-size:15px;background:rgba(8,12,10,.82);padding:6px 14px;border-radius:999px;letter-spacing:.02em}
+.cm-stats{display:flex;align-items:center;gap:8px;background:rgba(8,12,10,.7);padding:5px 12px;border-radius:999px;font-size:12px;font-variant-numeric:tabular-nums}
+.cm-hp{width:110px;height:8px;background:rgba(255,255,255,.18);border-radius:4px;overflow:hidden}
+.cm-hp i{display:block;height:100%;width:100%;background:#3ddc84;transition:width .4s,background .4s}
+.cm-hp i.mid{background:#ffc83d}.cm-hp i.low{background:#ff3d5a}
+.cm-clock{margin-left:6px;font-family:"SF Mono",Menlo,Consolas,monospace;color:#3dff8a}
+.cm-clock.late{color:#ff3d5a}
+.cm-sub{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 34%);transform:translateX(-50%);max-width:min(560px,calc(100% - 32px));background:rgba(0,0,0,.72);color:#fff;font-size:15px;font-weight:700;padding:8px 14px;border-radius:4px;text-align:center;line-height:1.5;opacity:0;transition:opacity .25s;pointer-events:none;z-index:4}
+.cm-sub.on{opacity:1}
+.cm-pop{position:absolute;left:50%;top:26%;transform:translate(-50%,0);font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-size:clamp(20px,6vw,34px);color:#3dff8a;text-shadow:0 3px 0 rgba(0,0,0,.6);opacity:0;pointer-events:none;white-space:nowrap;z-index:6}
+.cm-pop.bad{color:#ff5470}
+.cm-pop.show{animation:cmpop 1.5s ease-out forwards}
+@keyframes cmpop{0%{opacity:0;transform:translate(-50%,10px) scale(.6)}15%{opacity:1;transform:translate(-50%,0) scale(1.1)}25%{transform:translate(-50%,0) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-24px)}}
+.cm-card{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:translateX(-50%);width:min(380px,calc(100% - 32px));background:#fff;color:var(--ink);border-radius:8px;padding:16px;box-shadow:0 18px 40px rgba(0,0,0,.45);z-index:7}
+.cm-card.in{animation:cardin .35s cubic-bezier(.2,1.4,.4,1)}
+@keyframes cardin{from{transform:translate(-50%,40px);opacity:0}}
+.cm-tag{display:inline-block;background:var(--danger);color:#fff;font-size:11.5px;font-weight:900;padding:2px 8px;border-radius:3px;letter-spacing:.04em}
+.cm-card h3{font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-weight:400;font-size:24px;margin:8px 0 4px;text-wrap:balance}
+.cm-card p{margin:0 0 12px;font-size:14px;line-height:1.55;color:var(--ink-soft)}
+.cm-choices{display:flex;flex-direction:column;gap:8px}
+.cm-choices button{text-align:left;background:#f3f5f4;border:1px solid #d6dbd8;border-radius:5px;padding:10px 12px;font-size:14.5px;font-weight:700;color:var(--ink)}
+.cm-choices button:hover{background:#e7f3ec;border-color:var(--xl-green)}
+.cm-choices small{display:block;font-weight:400;font-size:12px;color:var(--ink-soft);margin-top:2px}
+.cm-panel{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);transform:translateX(-50%);width:min(360px,calc(100% - 32px));background:rgba(8,12,10,.88);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;align-items:stretch;text-align:center;z-index:7}
+.cm-pt{font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-size:20px}
+.cm-meter{height:16px;background:rgba(255,255,255,.15);border-radius:8px;overflow:hidden}
+.cm-meter i{display:block;height:100%;width:30%;background:linear-gradient(90deg,#ff3d5a,#ffc83d,#3ddc84)}
+.cm-meter.hit{animation:hit .08s}
+@keyframes hit{50%{transform:scale(1.04)}}
+.cm-big{font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-size:24px;background:#ffd23f;color:#1f2421;border:0;border-radius:8px;padding:16px;touch-action:manipulation;user-select:none}
+.cm-big:active{transform:scale(.96)}
+.cm-timer{font-size:12px;color:#b7c5bd;font-variant-numeric:tabular-nums}
+.cm-tbar{position:relative;height:22px;background:rgba(255,255,255,.12);border-radius:11px;overflow:hidden}
+.cm-tbar .zone{position:absolute;left:40%;width:20%;top:0;bottom:0;background:rgba(61,220,132,.55)}
+.cm-tbar i{position:absolute;top:2px;bottom:2px;width:6px;margin-left:-3px;left:0;background:#fff;border-radius:3px;box-shadow:0 0 8px #fff}
+.cm-ask{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 55%,rgba(27,40,34,.92),rgba(3,5,4,.97));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;z-index:9;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.cm-ask-small{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12.5px;letter-spacing:.18em;color:#8fa69a}
+.cm-ask h2{font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-weight:400;font-size:clamp(30px,8.4vw,84px);line-height:1.15;margin:0;word-break:keep-all;text-shadow:0 0 40px rgba(196,49,75,.55),0 6px 0 rgba(0,0,0,.6)}
+.cm-ask h2 span{color:#ff3d5a}
+.cm-ask.in h2{animation:slam .5s .15s cubic-bezier(.2,1.6,.4,1) both}
+.cm-ask.in .t-btns{animation:fin .6s .6s both}
+.intro .idcard{z-index:7}
+.intro-skip{z-index:10}
+.intro-fade{z-index:11}
+.cm-ask{z-index:12}
+.intro-skip{z-index:13;bottom:auto !important;top:calc(env(safe-area-inset-top,0px) + 14px)}
+
 /* epic title screen */
 .title{position:fixed;inset:0;z-index:120;background:radial-gradient(ellipse at 50% 62%,#1b2822 0%,#0a0f0d 55%,#030504 100%);color:#e9efe9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;overflow:hidden;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12vh;transition:opacity .6s}
 .title.leave{opacity:0;pointer-events:none}
@@ -322,15 +381,44 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
   <div class="t-flash" id="tFlash"></div>
 </div>
 
-<div class="intro" id="intro" hidden>
+<div class="intro" id="intro" hidden data-stage="subway">
   <div class="stage" id="stage"></div>
-  <div class="intro-hud"><div class="intro-msg" id="introMsg">출근 중…</div></div>
+  <div class="cm-fallback"><div class="fb-emoji" id="fbEmoji">🚇</div></div>
+  <div class="cm-hud">
+    <div class="cm-stage" id="cmStage">STAGE 1 · 9호선 급행</div>
+    <div class="cm-stats"><span>멘탈</span><div class="cm-hp"><i id="cmHp"></i></div><b id="cmMental">100</b><b class="cm-clock" id="cmClock">08:31</b></div>
+  </div>
+  <div class="cm-sub" id="cmSub"></div>
+  <div class="cm-pop" id="cmPop"></div>
+  <div class="cm-card" id="cmCard" hidden>
+    <div class="cm-tag" id="cmTag">빌런 출현</div>
+    <h3 id="cmTitle"></h3>
+    <p id="cmText"></p>
+    <div class="cm-choices" id="cmChoices"></div>
+  </div>
+  <div class="cm-panel" id="cmMash" hidden>
+    <div class="cm-pt">밀려온다!! 연타해서 버티기</div>
+    <div class="cm-meter"><i id="cmMeter"></i></div>
+    <button class="cm-big" id="cmMashBtn">버티기!!</button>
+    <div class="cm-timer" id="cmTimer">4.0초</div>
+  </div>
+  <div class="cm-panel" id="cmTiming" hidden>
+    <div class="cm-pt" id="cmTimingT">회전문 타이밍!</div>
+    <div class="cm-tbar"><span class="zone"></span><i id="cmMark"></i></div>
+    <button class="cm-big" id="cmTimingBtn">지금 들어가기!</button>
+  </div>
   <button class="idcard" id="idcard" hidden>
     <div class="hd">LUPANG KOREA</div>
     <div class="bd"><div class="ph">🥕</div><div><div class="nm">루팡 사원</div><div class="dp">딴짓연구소 · 사번 0909</div></div></div>
     <div class="bar"></div>
     <div class="cta">탭해서 사원증 찍기 · Space</div>
   </button>
+  <div class="cm-ask" id="cmAsk" hidden>
+    <div class="cm-ask-small" id="cmAskSmall"></div>
+    <h2 id="cmAskQ"></h2>
+    <div class="t-btns"><button class="t-go" id="cmYes">출근한다</button><button class="t-no" id="cmNo">집에 간다</button></div>
+    <div class="t-sub" id="cmAskSub" aria-live="polite"></div>
+  </div>
   <button class="intro-skip" id="introSkip">건너뛰기</button>
   <div class="intro-fade" id="introFade"></div>
 </div>
@@ -349,135 +437,420 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
-  const ov=document.getElementById("intro"),stage=document.getElementById("stage"),msg=document.getElementById("introMsg"),
-        card=document.getElementById("idcard"),fade=document.getElementById("introFade"),skip=document.getElementById("introSkip");
-  let R,scene,cam,P={},state,st,done,beep=()=>{},ck,ckTex,sec,late,built=false,last,raf;
-  const API={active:false,supported:()=>{if(!window.THREE)return false;try{const c=document.createElement("canvas");return !!(c.getContext("webgl")||c.getContext("experimental-webgl"))}catch(e){return false}},run};
+  const $=id=>document.getElementById(id);
+  const ov=$("intro"),stage=$("stage"),fade=$("introFade");
+  const API={active:false,supported:()=>true,run};
   window.LupangIntro=API;
 
-  function tex(w,h,draw){const c=document.createElement("canvas");c.width=w;c.height=h;draw(c.getContext("2d"),w,h);const t=new THREE.CanvasTexture(c);return t}
-  function build(){
-    R=new THREE.WebGLRenderer({antialias:true});R.setPixelRatio(Math.min(2,window.devicePixelRatio||1));stage.appendChild(R.domElement);
-    scene=new THREE.Scene();scene.background=new THREE.Color(0xdfe7ec);scene.fog=new THREE.Fog(0xdfe7ec,16,36);
-    cam=new THREE.PerspectiveCamera(62,1,.05,100);
-    scene.add(new THREE.HemisphereLight(0xffffff,0x9aa5a0,.95));
-    const dl=new THREE.DirectionalLight(0xffffff,.55);dl.position.set(4,9,6);scene.add(dl);
-    const M=(c,o)=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.7,metalness:.05},o||{}));
-    const box=(w,h,d,m,x,y,z)=>{const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);b.position.set(x,y,z);scene.add(b);return b};
+  let has3D=false,inited=false,R=null,cam=null,cur=null,runId=0,done=null,beep=()=>{},curAction=null,last=0,looping=false;
+  let tweens=[],shakeT=0,sway=0,SC={};
+  const W={mental:100,min:511};
+  const CAM={p:[0,1.6,5],l:[0,1.5,-6]};
+
+  // ---------- small utils ----------
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  const lerp=(a,b,k)=>a+(b-a)*k;
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  function tween(d,fn){return new Promise(res=>tweens.push({t:0,d,fn,res}))}
+  function camTo(p,l,d){const p0=CAM.p.slice(),l0=CAM.l.slice();return tween(d,k=>{k=ease(k);for(let i=0;i<3;i++){CAM.p[i]=lerp(p0[i],p[i],k);CAM.l[i]=lerp(l0[i],l[i],k)}})}
+  function shake(){shakeT=.45;ov.classList.remove("cm-shake");void ov.offsetWidth;ov.classList.add("cm-shake")}
+  function clockStr(m){m=Math.round(m);return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0")}
+  function hud(){
+    const hp=$("cmHp");hp.style.width=Math.max(0,W.mental)+"%";hp.className=W.mental<30?"low":W.mental<60?"mid":"";
+    $("cmMental").textContent=Math.round(W.mental);
+    $("cmClock").textContent=clockStr(W.min);$("cmClock").classList.toggle("late",W.min>=540);
+    if(SC.lobby&&SC.lobby.drawClock) SC.lobby.drawClock();
+  }
+  function pop(text,bad){const p=$("cmPop");p.textContent=text;p.className="cm-pop";void p.offsetWidth;p.className="cm-pop show"+(bad?" bad":"")}
+  function apply(o){
+    if(o.m) W.mental=Math.max(0,Math.min(100,W.mental+o.m));
+    if(o.t) W.min+=o.t;
+    hud();
+    const parts=[];if(o.m)parts.push("멘탈 "+(o.m>0?"+":"")+o.m);if(o.t)parts.push("+"+o.t+"분");
+    if(parts.length) pop(parts.join(" · "),(o.m||0)<0||(o.t||0)>0);
+    if((o.m||0)<0){beep(200,.22,"sawtooth",.06,110)}else{beep(880,.1,"triangle",.05);setTimeout(()=>beep(1175,.12,"triangle",.05),90)}
+  }
+  function sub(t){const s=$("cmSub");if(t)s.textContent=t;s.classList.toggle("on",!!t)}
+  function stageLabel(t,emoji,key){$("cmStage").textContent=t;$("fbEmoji").textContent=emoji;ov.dataset.stage=key}
+  function thump(){beep(70,.25,"sine",.32,40);setTimeout(()=>beep(70,.25,"sine",.28,40),260);setTimeout(()=>beep(55,.8,"sawtooth",.15,30),560)}
+  function hidePanels(){["cmCard","cmMash","cmTiming","idcard","cmAsk"].forEach(id=>$(id).hidden=true);sub("");curAction=null}
+
+  // ---------- UI interactions ----------
+  function choice(tag,title,text,opts){
+    return new Promise(res=>{
+      const c=$("cmCard");$("cmTag").textContent=tag;$("cmTitle").textContent=title;$("cmText").textContent=text;
+      const box=$("cmChoices");box.innerHTML="";
+      opts.forEach((o,i)=>{const b=document.createElement("button");b.innerHTML="";b.appendChild(document.createTextNode(o.l));
+        if(o.h){const sm=document.createElement("small");sm.textContent=o.h;b.appendChild(sm)}
+        b.onclick=()=>{c.hidden=true;curAction=null;beep(660,.06,"square",.04);res(o)};box.appendChild(b)});
+      c.hidden=false;c.classList.remove("in");void c.offsetWidth;c.classList.add("in");
+      beep(330,.12,"triangle",.06);setTimeout(()=>beep(247,.18,"triangle",.06),120);
+      curAction=null;
+    });
+  }
+  function mash(sec){
+    return new Promise(res=>{
+      const m=$("cmMash"),meter=$("cmMeter"),wrap=meter.parentElement;let v=35,t=sec,ended=false;
+      m.hidden=false;meter.style.width=v+"%";
+      const hit=()=>{if(ended)return;v=Math.min(100,v+10);beep(260+v*5,.03,"square",.03);wrap.classList.remove("hit");void wrap.offsetWidth;wrap.classList.add("hit")};
+      $("cmMashBtn").onpointerdown=e=>{e.preventDefault();hit()};curAction=hit;
+      const iv=setInterval(()=>{
+        t-=.05;v=Math.max(0,v-1.3);meter.style.width=Math.max(0,v)+"%";$("cmTimer").textContent=Math.max(0,t).toFixed(1)+"초";
+        if(v>=100||t<=0){ended=true;clearInterval(iv);m.hidden=true;curAction=null;res(v>=100)}
+      },50);
+    });
+  }
+  function timing(label){
+    return new Promise(res=>{
+      const el=$("cmTiming"),mk=$("cmMark");$("cmTimingT").textContent=label;el.hidden=false;
+      let x=0,dir=1,ended=false;
+      const iv=setInterval(()=>{x+=dir*2.4;if(x>=100){x=100;dir=-1}if(x<=0){x=0;dir=1}mk.style.left=x+"%"},16);
+      const go=()=>{if(ended)return;ended=true;clearInterval(iv);el.hidden=true;curAction=null;res(x>=38&&x<=62)};
+      $("cmTimingBtn").onclick=go;curAction=go;
+    });
+  }
+  function cardTap(){
+    return new Promise(res=>{
+      const c=$("idcard");c.hidden=false;c.classList.remove("fly");
+      const go=()=>{c.onclick=null;curAction=null;c.classList.add("fly");setTimeout(()=>{c.hidden=true;c.classList.remove("fly")},360);res()};
+      c.onclick=go;curAction=go;
+    });
+  }
+  const HOME=["카드값 결제일이 D-5입니다","집에 가도 메일은 쌓입니다","연차는 이미 0일입니다","…발걸음이 회사로 향합니다"];
+  function ask(small,q){
+    return new Promise(res=>{
+      const a=$("cmAsk"),no=$("cmNo");let n=0;
+      $("cmAskSmall").textContent=small;$("cmAskQ").innerHTML=q;$("cmAskSub").textContent="";no.textContent="집에 간다";
+      a.hidden=false;a.classList.remove("in");void a.offsetWidth;a.classList.add("in");thump();
+      const yes=()=>{a.hidden=true;curAction=null;beep(523,.1,"square",.05);setTimeout(()=>beep(784,.12,"square",.05),90);res()};
+      no.onclick=()=>{
+        if(n>=HOME.length){yes();return}
+        $("cmAskSub").textContent=HOME[n];no.classList.remove("denied");void no.offsetWidth;no.classList.add("denied");
+        beep(180,.22,"sawtooth",.07,110);n++;if(n>=HOME.length)no.textContent="출근한다";
+      };
+      $("cmYes").onclick=yes;curAction=yes;
+    });
+  }
+  async function fadeTo(v,ms){fade.style.transition="opacity "+ms+"ms";fade.style.opacity=v;await sleep(ms)}
+
+  // ---------- 3D helpers ----------
+  function webglOK(){try{const c=document.createElement("canvas");return !!(c.getContext("webgl")||c.getContext("experimental-webgl"))}catch(e){return false}}
+  const M=(c,o)=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.7,metalness:.05},o||{}));
+  function box(sc,w,h,d,m,x,y,z){const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);b.position.set(x,y,z);sc.add(b);return b}
+  function tex(w,h,draw){const c=document.createElement("canvas");c.width=w;c.height=h;draw(c.getContext("2d"),w,h);return new THREE.CanvasTexture(c)}
+  function label(sc,text,x,y,z,bg,fg){
+    const t=tex(512,128,(g)=>{g.fillStyle=bg||"rgba(196,49,75,.95)";g.fillRect(0,0,512,128);g.fillStyle=fg||"#fff";g.font='900 58px "Noto Sans KR",sans-serif';g.textAlign="center";g.textBaseline="middle";g.fillText(text,256,68)});
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,depthTest:false}));s.scale.set(1.1,.275,1);s.position.set(x,y,z);sc.add(s);return s;
+  }
+  const SKIN=[0xf1d3b8,0xe8c3a0,0xd9ad86];
+  function person(sc,x,z,color,seated){
+    const g=new THREE.Group();
+    if(seated){
+      const body=new THREE.Mesh(new THREE.CylinderGeometry(.19,.22,.65,10),M(color));body.position.y=.82;g.add(body);
+      const legs=box(g,.36,.14,.45,M(0x2b2f36),0,.52,.2);
+      const head=new THREE.Mesh(new THREE.SphereGeometry(.16,14,10),M(pick(SKIN)));head.position.y=1.32;g.add(head);
+    } else {
+      const body=new THREE.Mesh(new THREE.CylinderGeometry(.2,.24,1.05,10),M(color));body.position.y=.95;g.add(body);
+      const legs=new THREE.Mesh(new THREE.CylinderGeometry(.17,.15,.45,10),M(0x2b2f36));legs.position.y=.22;g.add(legs);
+      const head=new THREE.Mesh(new THREE.SphereGeometry(.17,14,10),M(pick(SKIN)));head.position.y=1.66;g.add(head);
+      const hair=new THREE.Mesh(new THREE.SphereGeometry(.175,14,10,0,Math.PI*2,0,Math.PI/2),M(0x1e1a18));hair.position.y=1.68;g.add(hair);
+    }
+    g.position.set(x,0,z);sc.add(g);return g;
+  }
+  const COLS=[0x34495e,0x7f8c8d,0x2c3e50,0x95a5a6,0x5d4037,0x455a64,0x6d4c41,0x37474f,0x8e9eab,0x263238];
+
+  function buildSubway(){
+    const sc=new THREE.Scene();sc.background=new THREE.Color(0x0d1110);sc.fog=new THREE.Fog(0x2a302e,5,15);
+    sc.add(new THREE.HemisphereLight(0xffffff,0x5f6866,.9));const dl=new THREE.DirectionalLight(0xffffff,.3);dl.position.set(0,3,2);sc.add(dl);
+    const B=(w,h,d,m,x,y,z)=>box(sc,w,h,d,m,x,y,z);
+    B(3.2,.1,18,M(0x8c918f),0,-.05,0);B(3.2,.1,18,M(0xf2f4f3),0,2.42,0);
+    B(.1,2.4,18,M(0xdfe5e3),-1.6,1.2,0);B(.1,2.4,18,M(0xdfe5e3),1.6,1.2,0);
+    const lt=M(0xffffff,{emissive:0xffffff,emissiveIntensity:1});for(let z=-8;z<=8;z+=2)B(.6,.03,1.3,lt,0,2.36,z);
+    [-1.3,1.3].forEach(x=>{B(.5,.42,14,M(0x3a6fb0),x,.3,0);B(.1,.55,14,M(0x2f5a90),x+(x<0?-.22:.22),.75,0)});
+    const winM=new THREE.MeshBasicMaterial({color:0x080b0a});[-1.54,1.54].forEach(x=>B(.02,.75,14,winM,x,1.58,0));
+    const streaks=[];for(let i=0;i<12;i++)streaks.push(B(.03,.05,1.4,new THREE.MeshBasicMaterial({color:0xffe9a8}),(i%2?-1.52:1.52),1.35+Math.random()*.4,-8+i*1.4));
+    const pole=M(0xc9d0cd,{metalness:.8,roughness:.25});
+    for(let z=-6;z<=6;z+=3)[-.75,.75].forEach(x=>{const p=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,2.4,8),pole);p.position.set(x,1.2,z);sc.add(p)});
+    [-.9,.9].forEach(x=>{const bar=new THREE.Mesh(new THREE.CylinderGeometry(.02,.02,14,8),pole);bar.rotation.x=Math.PI/2;bar.position.set(x,2.08,0);sc.add(bar);
+      for(let z=-6.3;z<=6.3;z+=.7){const h=new THREE.Mesh(new THREE.TorusGeometry(.06,.012,6,12),M(0xf2f2f2));h.position.set(x,1.9,z);sc.add(h)}});
+    B(3.2,2.4,.1,M(0xd6dcda),0,1.2,-8.6);
+    const dl1=B(.7,1.9,.05,M(0x9aa3a0,{metalness:.5}),-.36,.95,-8.52),dl2=B(.7,1.9,.05,M(0x9aa3a0,{metalness:.5}),.36,.95,-8.52);
+    const led=new THREE.Mesh(new THREE.PlaneGeometry(1.6,.24),new THREE.MeshBasicMaterial({map:tex(640,96,(g)=>{g.fillStyle="#0b0b0b";g.fillRect(0,0,640,96);g.fillStyle="#ff7a3d";g.font='700 46px "Noto Sans KR",sans-serif';g.textBaseline="middle";g.fillText("9호선 급행 ▶ 다음 역: 루팡역",20,50)})}));
+    led.position.set(0,2.12,-8.54);sc.add(led);
+    const crowd=[];
+    for(let i=0;i<24;i++){let x,z;do{x=(Math.random()-.5)*1.6;z=-7.6+Math.random()*13}while(Math.hypot(x,z-1.4)<.8);
+      const g=person(sc,x,z,COLS[i%COLS.length]);g.rotation.y=Math.random()*6;crowd.push({g,x,z})}
+    for(let z=-6;z<=6;z+=.85)[-1.22,1.22].forEach(x=>{if(Math.random()<.8){const g=person(sc,x,z,pick(COLS),true);g.rotation.y=x<0?Math.PI/2:-Math.PI/2}});
+    let vil=null;
+    return {sc,crowd,
+      reset(){crowd.forEach(c=>c.g.position.set(c.x,0,c.z));if(vil){sc.remove(vil);vil=null}dl1.position.x=-.36;dl2.position.x=.36},
+      push(k){crowd.forEach(c=>{c.g.position.x=lerp(c.x,c.x*.55,k);c.g.position.z=lerp(c.z,lerp(c.z,1.4,.45),k)})},
+      villain(v){if(vil)sc.remove(vil);vil=new THREE.Group();const p=person(vil,0,0,0xc4314b);p.rotation.y=Math.PI;
+        if(v.prop==="bag")box(vil,.5,.6,.3,M(0x1f2421),0,1.05,.28);
+        if(v.prop==="phone")box(vil,.08,.15,.02,M(0x111111,{emissive:0x4a7dff,emissiveIntensity:.8}),.18,1.6,-.15);
+        label(vil,v.tag,0,2.15,0);vil.position.set(.1,0,.5);sc.add(vil)},
+      doors(k){dl1.position.x=-.36-k*.6;dl2.position.x=.36+k*.6},
+      update(dt){streaks.forEach(s=>{s.position.z+=dt*24;if(s.position.z>8)s.position.z=-8})}};
+  }
+
+  function buildStreet(){
+    const sc=new THREE.Scene();sc.background=new THREE.Color(0xbcd3e0);sc.fog=new THREE.Fog(0xbcd3e0,18,46);
+    sc.add(new THREE.HemisphereLight(0xffffff,0x7d8a85,.95));const dl=new THREE.DirectionalLight(0xffffff,.6);dl.position.set(-6,12,8);sc.add(dl);
+    const B=(w,h,d,m,x,y,z)=>box(sc,w,h,d,m,x,y,z);
+    const g=new THREE.Mesh(new THREE.PlaneGeometry(60,60),M(0x4a4f4d));g.rotation.x=-Math.PI/2;sc.add(g);
+    const sw=tex(256,256,(c)=>{c.fillStyle="#cfd3d0";c.fillRect(0,0,256,256);c.strokeStyle="#b9beba";c.lineWidth=4;for(let i=0;i<=256;i+=64){c.beginPath();c.moveTo(i,0);c.lineTo(i,256);c.stroke();c.beginPath();c.moveTo(0,i);c.lineTo(256,i);c.stroke()}});
+    sw.wrapS=sw.wrapT=THREE.RepeatWrapping;sw.repeat.set(10,5);
+    const side=new THREE.Mesh(new THREE.PlaneGeometry(40,20),M(0xffffff,{map:sw}));side.rotation.x=-Math.PI/2;side.position.set(0,.01,-2);sc.add(side);
+    const gl=tex(256,512,(c)=>{c.fillStyle="#5d86a3";c.fillRect(0,0,256,512);for(let y=0;y<512;y+=32){c.fillStyle=y%64?"#6f98b5":"#7fa8c4";c.fillRect(0,y,256,28)}c.fillStyle="#2f4656";for(let x=0;x<=256;x+=64)c.fillRect(x,0,3,512)});
+    gl.wrapS=gl.wrapT=THREE.RepeatWrapping;gl.repeat.set(3,4);
+    B(16,30,10,M(0xffffff,{map:gl,roughness:.2,metalness:.3}),0,15,-13);
+    B(4.2,4,.3,M(0x2b2f2d),0,2,-7.9);
+    B(7,.25,2.4,M(0x1f2421),0,4.1,-7);
+    const sg=new THREE.Mesh(new THREE.PlaneGeometry(4.4,.9),new THREE.MeshBasicMaterial({map:tex(1024,208,(c)=>{c.fillStyle="#217346";c.fillRect(0,0,1024,208);c.fillStyle="#fff";c.font='900 110px "Noto Sans KR",sans-serif';c.textAlign="center";c.textBaseline="middle";c.fillText("🥕 루팡타워",512,110)})}));
+    sg.position.set(0,4.9,-7.75);sc.add(sg);
+    const glass=new THREE.MeshStandardMaterial({color:0xaee3f0,transparent:true,opacity:.35,roughness:.05,metalness:.2,side:THREE.DoubleSide});
+    const housing=new THREE.Mesh(new THREE.CylinderGeometry(1.45,1.45,3,32,1,true,Math.PI*.15,Math.PI*.7),glass);housing.position.set(0,1.5,-7);housing.rotation.y=Math.PI/2;sc.add(housing);
+    const housing2=housing.clone();housing2.rotation.y=-Math.PI/2;sc.add(housing2);
+    B(3.1,.15,3.1,M(0x2b2f2d),0,3.05,-7);
+    const wings=new THREE.Group();wings.position.set(0,0,-7);sc.add(wings);
+    const wm=new THREE.MeshStandardMaterial({color:0xcfeef7,transparent:true,opacity:.5,roughness:.05,metalness:.3});
+    for(let i=0;i<4;i++){const piv=new THREE.Group();piv.rotation.y=i*Math.PI/2;wings.add(piv);const w=new THREE.Mesh(new THREE.BoxGeometry(1.4,2.8,.04),wm);w.position.set(.7,1.45,0);piv.add(w);
+      const fr=new THREE.Mesh(new THREE.BoxGeometry(1.4,.06,.06),M(0x2b2f2d));fr.position.set(.7,2.85,0);piv.add(fr)}
+    const post=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,3,10),M(0x2b2f2d));post.position.set(0,1.5,-7);sc.add(post);
+    [[-6,-3],[6,-3],[-9,2],[9,2]].forEach(([x,z])=>{const t=new THREE.Mesh(new THREE.CylinderGeometry(.12,.16,2.4,8),M(0x5b4636));t.position.set(x,1.2,z);sc.add(t);
+      const f=new THREE.Mesh(new THREE.IcosahedronGeometry(1.1,1),M(0x4f9a5e,{flatShading:true}));f.position.set(x,3,z);sc.add(f)});
+    const walkers=[];for(let i=0;i<6;i++){const p=person(sc,-12+i*4.5,-1.5-Math.random()*3,pick(COLS));p.rotation.y=Math.PI/2;walkers.push(p)}
+    const props=new THREE.Group();sc.add(props);
+    let speed=1.3;
+    return {sc,wings,
+      reset(){speed=1.3;while(props.children.length)props.remove(props.children[0])},
+      setSpeed(v){speed=v},
+      prop(kind){while(props.children.length)props.remove(props.children[0]);
+        if(kind==="pigeon"){for(let i=0;i<9;i++){const b=new THREE.Mesh(new THREE.SphereGeometry(.12,8,6),M(0x8a8f96));b.scale.set(1,.8,1.4);b.position.set((Math.random()-.5)*2.4,.12,-2-Math.random()*1.6);props.add(b)}label(props,"🐦 비둘기 떼",0,1.4,-2.6)}
+        if(kind==="smoke"){for(let i=0;i<8;i++){const s=new THREE.Mesh(new THREE.SphereGeometry(.4+Math.random()*.3,10,8),new THREE.MeshStandardMaterial({color:0xdddddd,transparent:true,opacity:.35}));s.position.set(1.6+(Math.random()-.5),1.6+Math.random(),-2.4+(Math.random()-.5));props.add(s)}const p=person(props,2.2,-2.6,0x6d4c41);p.rotation.y=-Math.PI/2;label(props,"🚬 흡연 빌런",2.2,2.2,-2.6)}
+        if(kind==="flyer"){const p=person(props,-.9,-2.2,0xff8a3d);label(props,"📄 전단지",-.9,2.15,-2.2,"rgba(255,138,61,.95)")}},
+      update(dt){wings.rotation.y+=dt*speed;walkers.forEach(w=>{w.position.x+=dt*1.2;w.position.y=Math.abs(Math.sin(w.position.x*3))*.04;if(w.position.x>14)w.position.x=-14})}};
+  }
+
+  function buildLobby(){
+    const sc=new THREE.Scene();sc.background=new THREE.Color(0xdfe7ec);sc.fog=new THREE.Fog(0xdfe7ec,16,36);
+    sc.add(new THREE.HemisphereLight(0xffffff,0x9aa5a0,.95));const dl=new THREE.DirectionalLight(0xffffff,.55);dl.position.set(4,9,6);sc.add(dl);
+    const B=(w,h,d,m,x,y,z)=>box(sc,w,h,d,m,x,y,z);
     const ft=tex(256,256,(g)=>{g.fillStyle="#eceeed";g.fillRect(0,0,256,256);g.fillStyle="#dde2df";g.fillRect(0,0,128,128);g.fillRect(128,128,128,128)});
     ft.wrapS=ft.wrapT=THREE.RepeatWrapping;ft.repeat.set(15,15);
-    const fl=new THREE.Mesh(new THREE.PlaneGeometry(30,30),M(0xffffff,{map:ft,roughness:.3,metalness:.1}));fl.rotation.x=-Math.PI/2;scene.add(fl);
-    box(16,8,.2,M(0xf4f5f2),0,4,-12);box(.2,8,30,M(0xeef1f0),-8,4,0);box(.2,8,30,M(0xeef1f0),8,4,0);box(16,.2,30,M(0xf7f8f7),0,6.6,0);
+    const fl=new THREE.Mesh(new THREE.PlaneGeometry(30,30),M(0xffffff,{map:ft,roughness:.3,metalness:.1}));fl.rotation.x=-Math.PI/2;sc.add(fl);
+    const wall=M(0xf4f5f2);
+    B(7.2,8,.2,wall,-4.4,4,-12);B(7.2,8,.2,wall,4.4,4,-12);B(1.6,5,.2,wall,0,5.5,-12);
+    B(.2,8,30,M(0xeef1f0),-8,4,0);B(.2,8,30,M(0xeef1f0),8,4,0);B(16,.2,30,M(0xf7f8f7),0,6.6,0);
     const win=M(0xbfe0f0,{emissive:0x9cc9e0,emissiveIntensity:.45,roughness:.1});
-    for(let z=-9;z<=9;z+=3.2){box(.05,4,2.4,win,-7.88,3,z);box(.05,4,2.4,win,7.88,3,z)}
-    const lt=M(0xffffff,{emissive:0xffffff,emissiveIntensity:1});
-    for(let z=-10;z<=8;z+=3) box(5,.05,.25,lt,0,6.48,z);
+    for(let z=-9;z<=9;z+=3.2){B(.05,4,2.4,win,-7.88,3,z);B(.05,4,2.4,win,7.88,3,z)}
+    const lt=M(0xffffff,{emissive:0xffffff,emissiveIntensity:1});for(let z=-10;z<=8;z+=3)B(5,.05,.25,lt,0,6.48,z);
     const sign=new THREE.Mesh(new THREE.PlaneGeometry(7,1.75),new THREE.MeshBasicMaterial({map:tex(1024,256,(g)=>{g.fillStyle="#217346";g.fillRect(0,0,1024,256);g.fillStyle="#fff";g.textAlign="center";g.textBaseline="middle";g.font='900 104px "Noto Sans KR",sans-serif';g.fillText("🥕 루팡코리아",512,108);g.font='500 38px "Noto Sans KR",sans-serif';g.fillText("LUPANG KOREA · 월급은 소중하니까",512,200)})}));
-    sign.position.set(0,5,-11.88);scene.add(sign);
-    P.doors=[];
-    [-2.4,2.4].forEach(ex=>{box(2,3.2,.15,M(0x7d8682,{metalness:.6,roughness:.3}),ex,1.6,-11.85);
-      const dm=M(0xc9d0cd,{metalness:.85,roughness:.22});
-      P.doors.push([box(.78,2.8,.05,dm,ex-.4,1.4,-11.74),ex-.4,-1],[box(.78,2.8,.05,dm,ex+.4,1.4,-11.74),ex+.4,1]);
-      box(.18,.18,.04,M(0xffffff,{emissive:0xffd23f,emissiveIntensity:.9}),ex+1.15,1.3,-11.75)});
-    [[-5,-6],[5,-6],[-5,4.5],[5,4.5]].forEach(([x,z])=>{box(.8,6.6,.8,M(0xe5e8e6),x,3.3,z);
-      const pot=new THREE.Mesh(new THREE.CylinderGeometry(.35,.28,.6,16),M(0x4a524e));pot.position.set(x+(x<0?.9:-.9),.3,z);scene.add(pot);
-      const bush=new THREE.Mesh(new THREE.IcosahedronGeometry(.55,1),M(0x3f8f5a,{flatShading:true}));bush.position.set(pot.position.x,1.05,z);scene.add(bush)});
-    box(2.6,1.1,.8,M(0x2f3a35),-5.4,.55,-1.5);box(2.7,.06,.95,M(0xd9dedb),-5.4,1.13,-1.5);
-    const mon=box(.6,.4,.04,M(0x111111,{emissive:0x214a36,emissiveIntensity:.6}),-5.4,1.4,-1.3);mon.rotation.y=.3;
-    // speed gates
+    sign.position.set(0,5.6,-11.88);sc.add(sign);
+    // elevator cab behind the opening
+    B(1.8,.05,1.8,M(0x6b6f6d),0,.02,-13);B(1.8,3,.1,M(0xb9c0bc,{metalness:.6}),0,1.5,-13.9);
+    B(.1,3,1.8,M(0xc9d0cd,{metalness:.6}),-.9,1.5,-13);B(.1,3,1.8,M(0xc9d0cd,{metalness:.6}),.9,1.5,-13);B(1.8,.05,1.8,lt,0,2.95,-13);
+    B(1.9,.2,.25,M(0x7d8682,{metalness:.6}),0,3.05,-11.9);
+    const dm=M(0xc9d0cd,{metalness:.85,roughness:.22});
+    const doors=[[B(.8,2.9,.05,dm,-.4,1.45,-11.82),-.4,-1],[B(.8,2.9,.05,dm,.4,1.45,-11.82),.4,1]];
+    const dLight=B(.16,.16,.04,M(0xffffff,{emissive:0xffd23f,emissiveIntensity:.9}),1.1,1.3,-11.86);
+    const boss=new THREE.Group();const bp=person(boss,0,0,0x2c3e50);box(boss,.06,.35,.02,M(0xc4314b),0,1.1,.22);
+    const glasses=box(boss,.26,.04,.02,M(0x111111),0,1.68,.17);label(boss,"😐 팀장님",0,2.2,0);boss.position.set(.25,0,-13.2);boss.visible=false;sc.add(boss);
+    [[-5,-6],[5,-6],[-5,4.5],[5,4.5]].forEach(([x,z])=>{B(.8,6.6,.8,M(0xe5e8e6),x,3.3,z);
+      const pot=new THREE.Mesh(new THREE.CylinderGeometry(.35,.28,.6,16),M(0x4a524e));pot.position.set(x+(x<0?.9:-.9),.3,z);sc.add(pot);
+      const bush=new THREE.Mesh(new THREE.IcosahedronGeometry(.55,1),M(0x3f8f5a,{flatShading:true}));bush.position.set(pot.position.x,1.05,z);sc.add(bush)});
+    B(2.6,1.1,.8,M(0x2f3a35),-5.4,.55,-1.5);B(2.7,.06,.95,M(0xd9dedb),-5.4,1.13,-1.5);
     const ped=M(0xd5dad8,{metalness:.55,roughness:.3}),top=M(0x2b2f2d,{roughness:.4});
     const glass=new THREE.MeshStandardMaterial({color:0x9fdcbc,transparent:true,opacity:.55,roughness:.1,metalness:.1});
-    [-2.4,-.8,.8,2.4].forEach(x=>{box(.25,1,1.4,ped,x,.5,0);box(.27,.04,1.42,top,x,1.02,0);
-      box(.02,.04,1.1,M(0x21a366,{emissive:0x21a366,emissiveIntensity:.8}),x+(x<0?.13:-.13),.95,0)});
-    P.flaps=[];
-    [-1.6,0,1.6].forEach(cx=>{[[-1,cx-.8+.125],[1,cx+.8-.125]].forEach(([side,px])=>{
-      const pv=new THREE.Group();pv.position.set(px,.72,.15);scene.add(pv);
-      const f=new THREE.Mesh(new THREE.BoxGeometry(.52,.55,.02),glass);f.position.set(-side*.26,0,0);pv.add(f);
-      if(cx===0)P.flaps.push([pv,side]);else (P.side=P.side||[]).push([pv,side,cx])})});
-    box(.2,.05,.26,M(0x111111,{roughness:.3}),.8,1.07,.42);
-    P.led=new THREE.Mesh(new THREE.PlaneGeometry(.15,.15),new THREE.MeshBasicMaterial({color:0xc4314b}));
-    P.led.rotation.x=-Math.PI/2;P.led.position.set(.8,1.1,.42);scene.add(P.led);
-    P.ring=new THREE.Mesh(new THREE.RingGeometry(.09,.11,32),new THREE.MeshBasicMaterial({color:0xffd23f,transparent:true,opacity:.9}));
-    P.ring.rotation.x=-Math.PI/2;P.ring.position.set(.8,1.105,.42);scene.add(P.ring);
-    // clock board
-    ck=document.createElement("canvas");ck.width=512;ck.height=160;ckTex=new THREE.CanvasTexture(ck);
-    box(2.6,.85,.08,M(0x1b1f1d),0,3,-.4);
-    const cb=new THREE.Mesh(new THREE.PlaneGeometry(2.4,.75),new THREE.MeshBasicMaterial({map:ckTex}));cb.position.set(0,3,-.35);scene.add(cb);
-    // card mesh
-    P.card=new THREE.Mesh(new THREE.PlaneGeometry(.17,.107),new THREE.MeshBasicMaterial({side:THREE.DoubleSide,map:tex(256,160,(g)=>{g.fillStyle="#fff";g.fillRect(0,0,256,160);g.fillStyle="#217346";g.fillRect(0,0,256,40);g.fillStyle="#fff";g.font="900 22px sans-serif";g.fillText("LUPANG KOREA",12,28);g.font="56px sans-serif";g.fillText("🥕",14,118);g.fillStyle="#222";g.font="700 22px sans-serif";g.fillText("루팡 사원",96,92)})}));
-    P.card.visible=false;scene.add(P.card);
-    // coworkers walking in other lanes
-    P.npc=[];
-    [[-1.6,4,0x6264a7],[1.6,7,0xc77700],[-1.6,10,0x2a7de1]].forEach(([x,z,c])=>{const g=new THREE.Group();
-      const body=new THREE.Mesh(new THREE.CylinderGeometry(.22,.26,1.1,12),M(c));body.position.y=.95;g.add(body);
-      const head=new THREE.Mesh(new THREE.SphereGeometry(.18,16,12),M(0xf1d3b8));head.position.y=1.68;g.add(head);
-      g.position.set(x,0,z);scene.add(g);P.npc.push(g)});
-    window.addEventListener("resize",resize);built=true;
+    [-2.4,-.8,.8,2.4].forEach(x=>{B(.25,1,1.4,ped,x,.5,0);B(.27,.04,1.42,top,x,1.02,0);B(.02,.04,1.1,M(0x21a366,{emissive:0x21a366,emissiveIntensity:.8}),x+(x<0?.13:-.13),.95,0)});
+    const flaps=[],side=[];
+    [-1.6,0,1.6].forEach(cx=>{[[-1,cx-.8+.125],[1,cx+.8-.125]].forEach(([s,px])=>{
+      const pv=new THREE.Group();pv.position.set(px,.72,.15);sc.add(pv);
+      const f=new THREE.Mesh(new THREE.BoxGeometry(.52,.55,.02),glass);f.position.set(-s*.26,0,0);pv.add(f);
+      (cx===0?flaps:side).push([pv,s,cx])})});
+    B(.2,.05,.26,M(0x111111,{roughness:.3}),.8,1.07,.42);
+    const led=new THREE.Mesh(new THREE.PlaneGeometry(.15,.15),new THREE.MeshBasicMaterial({color:0xc4314b}));led.rotation.x=-Math.PI/2;led.position.set(.8,1.1,.42);sc.add(led);
+    const ring=new THREE.Mesh(new THREE.RingGeometry(.09,.11,32),new THREE.MeshBasicMaterial({color:0xffd23f,transparent:true,opacity:.9}));ring.rotation.x=-Math.PI/2;ring.position.set(.8,1.105,.42);sc.add(ring);
+    const ck=document.createElement("canvas");ck.width=512;ck.height=160;const ckTex=new THREE.CanvasTexture(ck);
+    B(2.6,.85,.08,M(0x1b1f1d),0,3,-.4);const cb=new THREE.Mesh(new THREE.PlaneGeometry(2.4,.75),new THREE.MeshBasicMaterial({map:ckTex}));cb.position.set(0,3,-.35);sc.add(cb);
+    const card=new THREE.Mesh(new THREE.PlaneGeometry(.17,.107),new THREE.MeshBasicMaterial({side:THREE.DoubleSide,map:tex(256,160,(g)=>{g.fillStyle="#fff";g.fillRect(0,0,256,160);g.fillStyle="#217346";g.fillRect(0,0,256,40);g.fillStyle="#fff";g.font="900 22px sans-serif";g.fillText("LUPANG KOREA",12,28);g.font="56px sans-serif";g.fillText("🥕",14,118);g.fillStyle="#222";g.font="700 22px sans-serif";g.fillText("루팡 사원",96,92)})}));
+    card.visible=false;sc.add(card);
+    const npc=[];[[-1.6,4,0x6264a7],[1.6,7,0xc77700],[-1.6,10,0x2a7de1]].forEach(([x,z,c])=>{const p=person(sc,x,z,c);npc.push(p)});
+    return {sc,card,led,ring,boss,
+      drawClock(){const g=ck.getContext("2d");g.fillStyle="#0c0f0d";g.fillRect(0,0,512,160);g.fillStyle=W.min>=540?"#ff4d64":"#3dff8a";
+        g.font='700 92px "SF Mono",Menlo,Consolas,monospace';g.textAlign="center";g.textBaseline="middle";g.fillText(clockStr(W.min)+":00",256,86);ckTex.needsUpdate=true},
+      reset(){flaps.forEach(([pv])=>pv.rotation.y=0);led.material.color.set(0xc4314b);ring.visible=true;card.visible=false;boss.visible=false;doors.forEach(([d,x])=>d.position.x=x);npc.forEach((n,i)=>n.position.z=[4,7,10][i])},
+      flaps(k){flaps.forEach(([pv,s])=>pv.rotation.y=s*k*Math.PI/2)},
+      doors(k){doors.forEach(([d,x,s])=>d.position.x=x+s*k*.78)},
+      update(dt,T){ring.scale.setScalar(1+Math.sin(T*6)*.15);
+        npc.forEach((n,i)=>{n.position.z-=dt*1.4;n.position.y=Math.abs(Math.sin(T*7+i))*.04;if(n.position.z<-10)n.position.z=10});
+        side.forEach(([pv,s,cx])=>{const near=npc.some(n=>n.position.x===cx&&Math.abs(n.position.z)<1.8);pv.rotation.y+=((near?s*Math.PI/2:0)-pv.rotation.y)*Math.min(1,dt*10)})}};
   }
-  function resize(){if(!R)return;const w=window.innerWidth,h=window.innerHeight;R.setSize(w,h,false);cam.aspect=w/h;cam.fov=w<h?78:62;cam.updateProjectionMatrix()}
-  function drawClock(){
-    const g=ck.getContext("2d"),m=Math.floor(sec/60),ss=Math.floor(sec%60);
-    g.fillStyle="#0c0f0d";g.fillRect(0,0,512,160);
-    g.fillStyle=sec>=540*60?"#ff4d64":"#3dff8a";g.font='700 92px "SF Mono",Menlo,Consolas,monospace';g.textAlign="center";g.textBaseline="middle";
-    g.fillText(String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0")+":"+String(ss).padStart(2,"0"),256,86);
-    ckTex.needsUpdate=true;
+
+  function init3D(){
+    R=new THREE.WebGLRenderer({antialias:true});R.setPixelRatio(Math.min(2,window.devicePixelRatio||1));stage.appendChild(R.domElement);
+    cam=new THREE.PerspectiveCamera(62,1,.05,120);
+    SC.subway=buildSubway();SC.street=buildStreet();SC.lobby=buildLobby();
+    window.addEventListener("resize",resize);resize();
   }
-  const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
-  function setMsg(t,k){msg.textContent=t;msg.className="intro-msg"+(k?" "+k:"")}
-  function go(s){state=s;st=0}
-  function tap(){
-    if(state!=="tap") return;
-    late=sec>=540*60;card.classList.add("fly");
-    setTimeout(()=>{card.hidden=true;card.classList.remove("fly")},360);
-    P.card.visible=true;go("swipe");
-  }
-  function run(cb,beepFn){
-    if(!built){try{build()}catch(e){cb();return}}
-    done=cb;beep=beepFn||beep;API.active=true;ov.hidden=false;resize();
-    fade.style.transition="none";fade.style.opacity=1;requestAnimationFrame(()=>{fade.style.transition="";fade.style.opacity=0});
-    P.flaps.forEach(([pv])=>pv.rotation.y=0);P.led.material.color.set(0xc4314b);P.ring.visible=true;
-    P.doors.forEach(([d,x])=>d.position.x=x);P.card.visible=false;card.hidden=true;
-    P.npc.forEach((n,i)=>n.position.z=[4,7,10][i]);
-    sec=8*3600+59*60+38;late=false;drawClock();setMsg("🚶 출근 중… 08:59");go("walk");
-    last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);
-  }
-  function finish(){
-    if(!API.active) return;API.active=false;fade.style.opacity=1;
-    setTimeout(()=>{ov.hidden=true;cancelAnimationFrame(raf);const r={ok:true,late};done&&done(r)},520);
-  }
+  function resize(){if(!R)return;const w=window.innerWidth,h=window.innerHeight;R.setSize(w,h,false);cam.aspect=w/h;cam.fov=w<h?80:62;cam.updateProjectionMatrix()}
+  function setScene(k){cur=has3D?SC[k]:null;if(cur)cur.reset()}
+
   function loop(now){
-    const dt=Math.min(.05,(now-last)/1000);last=now;st+=dt;
-    const T=now/1000;
-    // clock runs fast: 1 sec every .32s until tapped
-    if(state==="walk"||state==="tap"){const before=Math.floor(sec);sec+=dt/.32;if(Math.floor(sec)!==before){drawClock();if(Math.floor(sec)===540*60&&state==="tap"){setMsg("⏰ 09:00 넘었다! 빨리 찍어!","bad");beep(440,.15,"square",.05)}}}
-    P.npc.forEach((n,i)=>{n.position.z-=dt*1.4;n.position.y=Math.abs(Math.sin(T*7+i))*.04;if(n.position.z<-10)n.position.z=10});
-    P.side.forEach(([pv,side,cx])=>{const near=P.npc.some(n=>n.position.x===cx&&Math.abs(n.position.z)<1.8);const tgt=near?side*Math.PI/2:0;pv.rotation.y+=(tgt-pv.rotation.y)*Math.min(1,dt*10)});
-    P.ring.scale.setScalar(1+Math.sin(T*6)*.15);
-    let z=9,look=[0,1.3,-6];
-    if(state==="walk"){const k=ease(Math.min(1,st/2.4));z=9-(9-2.1)*k;look=[0,1.3-k*.25,-6+k*4.5];
-      if(st>=2.4){go("tap");card.hidden=false;setMsg(sec>=540*60?"⏰ 09:00 넘었다! 빨리 찍어!":"🪪 사원증을 리더기에 찍어주세요",sec>=540*60?"bad":"")}}
-    else if(state==="tap"){z=2.1;look=[.35,1.05,-1.5]}
-    else if(state==="swipe"){z=2.1;look=[.35,1.05,-1.5];
-      const k=Math.min(1,st/.45),from=new THREE.Vector3(.15,1.25,1.6),to=new THREE.Vector3(.8,1.16,.42);
-      P.card.position.lerpVectors(from,to,ease(k));P.card.rotation.set(-Math.PI/2*k-(1-k)*.4,0,(1-k)*.5);
-      if(st>=.45){P.led.material.color.set(0x21e07a);P.ring.visible=false;beep(1568,.09,"square",.06);setTimeout(()=>beep(2093,.12,"square",.06),90);
-        setMsg(late?"😅 삑— 지각 출입 기록됨":"✅ 삑! 정시 출근 +₩10,000",late?"bad":"good");go("open")}}
-    else if(state==="open"){z=2.1;look=[.2,1.1,-3];
-      const k=ease(Math.min(1,st/.45));P.flaps.forEach(([pv,side])=>pv.rotation.y=side*k*Math.PI/2);
-      P.card.position.y=1.16+k*.3;P.card.position.x=.8-k*.6;
-      if(st>=.5){P.card.visible=false;go("through")}}
-    else if(state==="through"){const k=ease(Math.min(1,st/2.8));z=2.1-(2.1+9)*k;look=[0,1.5,z-6];
-      if(z<-3){const dk=Math.min(1,(-3-z)/3);P.doors.forEach(([d,x,side])=>d.position.x=x+side*dk*.75)}
-      if(st>=1.2&&st<1.25)setMsg("🛗 엘리베이터 타는 중…");
-      if(st>=2.6) finish()}
-    const bob=(state==="walk"||state==="through")?Math.sin(T*9)*.03:0;
-    cam.position.set(0,1.62+bob,z);cam.lookAt(look[0],look[1],look[2]);
-    R.render(scene,cam);
-    if(API.active||ov.hidden===false) raf=requestAnimationFrame(loop);
+    const dt=Math.min(.05,(now-last)/1000||0);last=now;const T=now/1000;
+    tweens=tweens.filter(tw=>{tw.t+=dt;const k=Math.min(1,tw.t/tw.d);tw.fn(k);if(k>=1){tw.res();return false}return true});
+    if(shakeT>0)shakeT-=dt;
+    if(has3D&&cur){
+      cur.update&&cur.update(dt,T);
+      const sx=sway?Math.sin(T*1.4)*.035*sway:0,sy=sway?Math.sin(T*2.1)*.015*sway:0;
+      const sh=shakeT>0?(Math.random()-.5)*.12*shakeT:0;
+      cam.position.set(CAM.p[0]+sx+sh,CAM.p[1]+sy+sh,CAM.p[2]);cam.lookAt(CAM.l[0]+sx,CAM.l[1],CAM.l[2]);
+      cam.rotation.z+=sx*.4;
+      R.render(cur.sc,cam);
+    }
+    if(API.active) requestAnimationFrame(loop); else looping=false;
   }
-  card.addEventListener("click",tap);
-  skip.addEventListener("click",()=>{late=false;if(state==="walk"||state==="tap")late=sec>=540*60;finish()});
-  document.addEventListener("keydown",e=>{if(!API.active)return;if(e.key===" "||e.key==="Enter"){e.preventDefault();tap()}});
+
+  // ---------- story data ----------
+  const VILLAINS=[
+    {tag:"🦵 쩍벌 빌런",prop:"",title:"옆자리 다리가 180도",text:"앉아 있는 아저씨 다리가 당신 무릎까지 침범했다. 영토 분쟁 발생.",opts:[
+      {l:"나도 같이 벌린다",h:"맞불 작전",m:-5,r:"팽팽한 대치 끝에 3cm 영토 회복"},
+      {l:"조용히 참는다",h:"평화주의",m:-15,r:"무릎이 점점 접힌다…"},
+      {l:"옆 칸으로 이동",h:"전략적 후퇴",m:-3,t:1,r:"옆 칸은 더 꽉 차 있었다"}]},
+    {tag:"📢 스피커폰 빌런",prop:"phone",title:"스피커폰 영상통화 중",text:"\"어~ 엄마!!! 나 지금 지하철!!! 어!! 밥 먹었어!!!\" 칸 전체가 통화에 참여 중.",opts:[
+      {l:"헛기침 크게 한다",h:"소극적 저항",m:-8,r:"더 크게 말하기 시작했다"},
+      {l:"이어폰 볼륨 MAX",h:"현실 도피",m:-4,r:"고막이 조금 아프다"},
+      {l:"같이 인사한다",h:"\"어머님 안녕하세요~\"",m:5,r:"어머님이 반겨주셨다 (?)"}]},
+    {tag:"🎒 백팩 빌런",prop:"bag",title:"백팩이 얼굴을 강타",text:"앞사람 백팩이 정확히 얼굴 높이. 열차가 흔들릴 때마다 퍽, 퍽.",opts:[
+      {l:"백팩을 살짝 민다",h:"정당방위",m:-6,r:"돌아봤다. 눈이 마주쳤다. 어색."},
+      {l:"고개를 숙인다",h:"인내",m:-12,r:"목이 뻐근하다"},
+      {l:"백팩에 기대서 잔다",h:"역발상",m:8,r:"생각보다 푹신하다 😴"}]},
+    {tag:"🚪 문지기 빌런",prop:"",title:"문 앞에서 절대 안 비킴",text:"내려야 하는데 문 앞 사람이 미동도 없다. 이어폰 끼고 눈 감음.",opts:[
+      {l:"\"내릴게요!!\" 외친다",h:"정공법",m:-5,r:"겨우 틈이 생겼다"},
+      {l:"어깨로 밀고 나간다",h:"럭비 모드",m:-10,r:"뒤에서 혀 차는 소리가 들린다"},
+      {l:"다음 역에서 내린다",h:"포기",m:-2,t:2,r:"한 정거장 돌아가는 중…"}]}
+  ];
+  const STREET=[
+    {kind:"pigeon",tag:"🐦 비둘기 떼",title:"출입구를 점령한 비둘기 떼",text:"비둘기 아홉 마리가 길을 막고 있다. 한 마리가 당신을 노려본다.",opts:[
+      {l:"정면 돌파",h:"용기",m:-10,r:"푸드덕!! 머리 위로 날아갔다"},
+      {l:"멀리 돌아간다",m:-2,t:1,r:"비둘기가 승리했다"},
+      {l:"과자를 던져준다",h:"외교",m:6,t:1,r:"비둘기와 친구가 되었다 🐦"}]},
+    {kind:"smoke",tag:"🚬 흡연 빌런",title:"입구 앞 흡연 구역",text:"회사 입구 바로 옆에서 담배 연기가 밀려온다. 금연 구역 표지판 바로 앞이다.",opts:[
+      {l:"숨 참고 돌파",m:-8,r:"폐활량 신기록 달성"},
+      {l:"뒷문으로 돌아간다",m:-2,t:1,r:"뒷문은 잠겨 있었다"}]},
+    {kind:"flyer",tag:"📄 전단지 빌런",title:"헬스장 전단지 공격",text:"\"회원님 체험권 하나만~\" 손이 전단지로 가득하다.",opts:[
+      {l:"받는다",m:-3,r:"가방에 전단지가 하나 늘었다"},
+      {l:"못 본 척 지나간다",m:-6,r:"\"회원님~!\" 계속 따라온다"},
+      {l:"오히려 상담받는다",h:"PT 10회 등록",m:4,t:2,r:"이번엔 진짜 다닐 거다"}]}
+  ];
+
+  // ---------- story flow ----------
+  async function run(cb,beepFn){
+    done=cb;beep=beepFn||beep;const id=++runId;const alive=()=>id===runId&&API.active;
+    API.active=true;ov.hidden=false;hidePanels();
+    if(!inited){inited=true;try{if(window.THREE&&webglOK()){init3D();has3D=true}}catch(e){has3D=false}}
+    ov.classList.toggle("no3d",!has3D);
+    W.mental=100;W.min=8*60+31;hud();
+    if(!looping){looping=true;last=performance.now();requestAnimationFrame(loop)}
+    fade.style.transition="none";fade.style.opacity=1;
+
+    // ===== STAGE 1: subway =====
+    setScene("subway");stageLabel("STAGE 1 · 9호선 급행","🚇","subway");
+    CAM.p=[0,1.6,1.4];CAM.l=[0,1.5,-6];sway=1;
+    await sleep(60);await fadeTo(0,600);if(!alive())return;
+    sub("이번 열차는 급행 열차입니다. 다음 정차역은… 사람 많은 역입니다");beep(988,.15,"sine",.05);setTimeout(()=>beep(784,.2,"sine",.05),180);
+    await sleep(2300);if(!alive())return;
+    sub("🚪 문이 열립니다. 사람들이 밀려 들어옵니다!!");shake();beep(90,.5,"sawtooth",.08,60);
+    if(cur)tween(1,k=>cur.push(ease(k)));
+    await sleep(700);if(!alive())return;
+    sub("");
+    const held=await mash(4);if(!alive())return;
+    apply(held?{m:-5}:{m:-15,t:1});sub(held?"버텼다… 손잡이 사수 성공 💪":"밀려서 문 앞까지 떠밀려 왔다… 😵");
+    await sleep(1600);if(!alive())return;
+    const v=pick(VILLAINS);if(cur)cur.villain(v);
+    sub("…뭔가 심상치 않은 기운이 느껴진다");camTo([0,1.6,1.4],[.1,1.5,-2],.6);await sleep(1000);if(!alive())return;sub("");
+    const o1=await choice(v.tag,v.title,v.text,v.opts);if(!alive())return;
+    apply(o1);sub(o1.r);await sleep(1900);if(!alive())return;
+    sub("이번 역은 루팡역, 루팡역입니다. 내리실 문은 앞쪽입니다");W.min+=15;hud();
+    if(cur)tween(.8,k=>cur.doors(ease(k)));
+    await camTo([0,1.6,-7.6],[0,1.5,-14],2.2);if(!alive())return;
+    await fadeTo(1,450);sub("");
+
+    await ask(clockStr(W.min)+" · 멘탈 "+Math.round(W.mental),"이래도 계속<br>출근하시겠습니까<span>?</span>");if(!alive())return;
+
+    // ===== STAGE 2: street & revolving door =====
+    setScene("street");stageLabel("STAGE 2 · 루팡타워 앞","🏢","street");
+    CAM.p=[0,1.6,6];CAM.l=[0,2.4,-8];sway=.4;W.min+=3;hud();
+    const ev=pick(STREET);if(cur)cur.prop(ev.kind);
+    await fadeTo(0,500);if(!alive())return;
+    sub("출구로 나왔다. 회사가 보인다…");
+    await camTo([0,1.6,.6],[0,1.8,-6],2);if(!alive())return;sub("");
+    const o2=await choice(ev.tag,ev.title,ev.text,ev.opts);if(!alive())return;
+    apply(o2);sub(o2.r);if(cur)cur.prop("");await sleep(1700);if(!alive())return;
+    sub("회전문이다. 타이밍을 맞춰 들어가자");
+    await camTo([0,1.6,-4.4],[0,1.6,-9],1.6);if(!alive())return;sub("");
+    let tries=0;
+    while(true){
+      const ok=await timing(tries?"다시! 초록 구간에서 탭":"회전문 타이밍! 초록 구간에서 탭");if(!alive())return;
+      if(ok){beep(1046,.1,"square",.05);sub("나이스 타이밍 ✨");break}
+      tries++;shake();apply({m:-8,t:tries>1?1:0});sub(pick(["쿵!! 회전문에 이마를 박았다 😵","유리문에 얼굴 도장 찍음 🫠","한 바퀴 더 돌아서 밖으로 나왔다 🔄"]));
+      await camTo([0,1.6,-3.9],[0,1.6,-9],.25);await camTo([0,1.6,-4.4],[0,1.6,-9],.4);await sleep(700);if(!alive())return;
+      if(tries>=3){sub("경비 아저씨가 회전문을 멈춰줬다 🙏");break}
+    }
+    if(cur)cur.setSpeed(2.2);
+    await camTo([0,1.6,-9.5],[0,1.6,-16],2);if(!alive())return;
+    await fadeTo(1,400);sub("");
+
+    // ===== STAGE 3: lobby speed gate & elevator =====
+    setScene("lobby");stageLabel("STAGE 3 · 로비 스피드게이트","🪪","lobby");W.min+=2;hud();
+    CAM.p=[0,1.62,9];CAM.l=[0,1.3,-6];sway=.4;
+    await fadeTo(0,450);if(!alive())return;
+    sub("🚶 게이트로 가는 중… "+clockStr(W.min));
+    await camTo([0,1.62,2.1],[.35,1.05,-1.5],2.2);if(!alive())return;sway=0;
+    sub("🪪 사원증을 리더기에 찍어주세요");
+    const swipe=async()=>{if(!cur)return;cur.card.visible=true;const a=new THREE.Vector3(.15,1.25,1.6),b=new THREE.Vector3(.8,1.16,.42);
+      await tween(.45,k=>{cur.card.position.lerpVectors(a,b,ease(k));cur.card.rotation.set(-Math.PI/2*k-(1-k)*.4,0,(1-k)*.5)})};
+    await cardTap();if(!alive())return;await swipe();if(!alive())return;
+    if(Math.random()<.45){
+      beep(220,.12,"square",.06);setTimeout(()=>beep(220,.2,"square",.06),160);shake();
+      sub("삑-! 인식 실패 ❌ 카드를 다시 대주세요");apply({m:-5,t:1});
+      if(cur){cur.card.visible=false}await sleep(900);if(!alive())return;
+      await cardTap();if(!alive())return;await swipe();if(!alive())return;
+    }
+    if(cur){cur.led.material.color.set(0x21e07a);cur.ring.visible=false}
+    beep(1568,.09,"square",.06);setTimeout(()=>beep(2093,.12,"square",.06),90);sub("✅ 삑! 통과");
+    if(cur){await tween(.45,k=>{cur.flaps(ease(k));cur.card.position.y=1.16+k*.3});cur.card.visible=false}else await sleep(450);
+    if(!alive())return;
+    sway=.4;sub("🛗 엘리베이터 앞으로…");
+    await camTo([0,1.62,-9.6],[0,1.5,-14],2.4);if(!alive())return;sway=0;
+    beep(1318,.25,"sine",.06);setTimeout(()=>beep(1046,.35,"sine",.06),260);sub("띵동~ 🛎");
+    if(cur){cur.boss.visible=true;await tween(.9,k=>cur.doors(ease(k)))}else await sleep(900);
+    if(!alive())return;
+    sub("…엘리베이터 안에 팀장님이 계신다.");await sleep(1100);if(!alive())return;sub("");
+    const o3=await choice("😐 최종 보스","엘리베이터에 팀장님이…","문이 열렸다. 팀장님과 눈이 마주쳤다. 문이 닫히기까지 3초.",[
+      {l:"같이 탄다",h:"정면 승부",m:-18,r:"어색한 침묵 37초… \"요즘 바쁘죠?\" \"아 네…\""},
+      {l:"폰 보는 척 탄다",h:"투명인간 모드",m:-10,r:"팀장님: \"오늘 일찍 왔네요?\" (전혀 아님)"},
+      {l:"계단으로 간다",h:"17층까지",m:-6,t:3,r:"허벅지가 불탄다… 🔥"}]);
+    if(!alive())return;
+    apply(o3);sub(o3.r);await sleep(2000);if(!alive())return;
+    W.min+=2;hud();
+    if(o3.t){await camTo([-4,1.62,-9],[-8,1.6,-9],1.2)}else{await camTo([0,1.62,-12.6],[0,1.5,-16],1.3)}
+    if(!alive())return;
+    await fadeTo(1,400);sub("");
+    const late=W.min>=540;
+    await ask((late?"⏰ 지각 · ":"✅ ")+clockStr(W.min)+" 도착 · 멘탈 "+Math.round(W.mental),"마지막으로 묻겠습니다.<br>정말 출근하시겠습니까<span>?</span>");
+    if(!alive())return;
+    finish({ok:true,late,mental:Math.round(W.mental),arrive:clockStr(W.min)});
+  }
+
+  function finish(r){
+    if(!API.active) return;API.active=false;runId++;hidePanels();
+    fade.style.transition="opacity 400ms";fade.style.opacity=1;
+    setTimeout(()=>{ov.hidden=true;done&&done(r)},420);
+  }
+  $("introSkip").addEventListener("click",()=>finish({ok:false}));
+  document.addEventListener("keydown",e=>{if(!API.active)return;if(e.key===" "||e.key==="Enter"){e.preventDefault();curAction&&curAction()}});
 })();
 </script>
 <script>
@@ -928,8 +1301,11 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
     setBoss(false);setMsg("팀장님 자리 비움 · 루팡 가능");setFormula("=출근(09:00)");
     SFX.ping();spawnCoin();spawnCoin();render();
     if(r&&r.ok){
-      if(!r.late){S.score+=10000;floatAt(S.pos.c,S.pos.r,"정시 출근 +₩10,000","combo");notify({who:"루팡봇",title:"루팡봇",body:"정시 출근 성공! +₩10,000 ⏰",ms:2600})}
-      else notify({who:"인사팀",title:"인사팀",body:"근태: 09:00 이후 출입 기록 확인됨 😅",ms:2800});
+      if(!r.late){S.score+=10000;floatAt(S.pos.c,S.pos.r,"정시 출근 +₩10,000","combo");notify({who:"루팡봇",title:"루팡봇",body:r.arrive+" 정시 출근 성공! +₩10,000 ⏰",ms:2600})}
+      else notify({who:"인사팀",title:"인사팀",body:"근태: "+r.arrive+" 출입 기록 확인됨 😅",ms:2800});
+      if(r.mental>=70){S.score+=20000;setTimeout(()=>notify({who:"루팡봇",title:"루팡봇",body:"출근길 멘탈 "+r.mental+" 유지! 멘탈 보너스 +₩20,000 🧘",ms:2800}),900)}
+      else if(r.mental<30){S.strikes=1;setTimeout(()=>notify({who:"루팡봇",title:"루팡봇",body:"출근길에 멘탈이 털렸다 ("+r.mental+")… 경고 1개 안고 시작 🫠",ms:3200}),900)}
+      render();
     }
   }
   function beginDay(){
