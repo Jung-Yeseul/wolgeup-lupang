@@ -181,6 +181,34 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
 .promo small{display:block;font-size:12px;font-weight:500;opacity:.85}
 @keyframes promo{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}14%{transform:translate(-50%,-50%) scale(1.15);opacity:1}24%{transform:translate(-50%,-50%) scale(1)}82%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-70%) scale(1)}}
 #sum.bump{color:var(--gold)}
+/* outlook variant */
+.tn.outlook .tn-app{color:#0f6cbd}
+.tn.outlook .tn-app i{background:#0f6cbd}
+.tn.outlook .tn-av::after{display:none}
+.tn.outlook .tn-reply button{border-color:#b4d3f0;background:#eef5fc;color:#0f5aa6}
+.tn.outlook .tn-reply button:hover{background:#dcebfa}
+.tn.reminder{border-left:4px solid #0f6cbd}
+.tn-txt em{display:block;font-style:normal;font-weight:700;color:#0f5aa6;font-size:12px}
+.tn.outlook .tn-txt b{font-weight:500;color:#424242;font-size:11.5px}
+
+/* 3D commute intro */
+.intro{position:fixed;inset:0;z-index:100;background:#dfe7ec;overflow:hidden}
+.intro .stage,.intro .stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.intro-hud{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 16px);display:flex;justify-content:center;pointer-events:none;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.intro-msg{background:rgba(24,40,32,.82);color:#fff;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px;text-align:center}
+.intro-msg.good{background:var(--xl-green)}.intro-msg.bad{background:var(--danger)}
+.intro-skip{position:absolute;right:calc(env(safe-area-inset-right,0px) + 14px);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);background:rgba(255,255,255,.85);border:1px solid #b9c0bc;border-radius:4px;padding:6px 12px;font-size:12.5px;color:var(--ink)}
+.idcard{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 64px);transform:translateX(-50%);width:230px;background:#fff;border:0;border-radius:10px;box-shadow:0 14px 30px rgba(0,0,0,.3);padding:0;overflow:hidden;text-align:left;animation:cardbob 1s ease-in-out infinite alternate}
+@keyframes cardbob{to{transform:translate(-50%,-8px)}}
+.idcard .hd{background:var(--xl-green);color:#fff;font-weight:900;font-size:13px;padding:6px 10px;letter-spacing:.06em}
+.idcard .bd{display:flex;gap:10px;padding:10px;align-items:center}
+.idcard .ph{width:52px;height:64px;background:#f2faf5;border:1px solid var(--grid-line);display:grid;place-items:center;font-size:30px;border-radius:4px}
+.idcard .nm{font-weight:900;font-size:15px;color:var(--ink)}.idcard .dp{font-size:11.5px;color:var(--ink-soft)}
+.idcard .bar{height:14px;margin:0 10px 8px;background:repeating-linear-gradient(90deg,#222 0 2px,transparent 2px 4px,#222 4px 5px,transparent 5px 8px)}
+.idcard .cta{background:#1f2421;color:#fff;font-weight:700;font-size:12.5px;text-align:center;padding:7px}
+.idcard.fly{animation:cardfly .35s ease-in forwards}
+@keyframes cardfly{to{transform:translate(-10%,-260px) scale(.3) rotate(-12deg);opacity:0}}
+.intro-fade{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .5s}
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
 </head>
@@ -246,6 +274,19 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
   </div>
 </div>
 
+<div class="intro" id="intro" hidden>
+  <div class="stage" id="stage"></div>
+  <div class="intro-hud"><div class="intro-msg" id="introMsg">출근 중…</div></div>
+  <button class="idcard" id="idcard" hidden>
+    <div class="hd">LUPANG KOREA</div>
+    <div class="bd"><div class="ph">🥕</div><div><div class="nm">루팡 사원</div><div class="dp">딴짓연구소 · 사번 0909</div></div></div>
+    <div class="bar"></div>
+    <div class="cta">탭해서 사원증 찍기 · Space</div>
+  </button>
+  <button class="intro-skip" id="introSkip">건너뛰기</button>
+  <div class="intro-fade" id="introFade"></div>
+</div>
+
 <div class="pad">
   <div class="dpad">
     <button class="u" data-d="0,-1" aria-label="위로">▲</button>
@@ -257,6 +298,140 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
   <div class="credit">made by <b>딴짓연구소</b><br>@ttanjit.lab</div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  const ov=document.getElementById("intro"),stage=document.getElementById("stage"),msg=document.getElementById("introMsg"),
+        card=document.getElementById("idcard"),fade=document.getElementById("introFade"),skip=document.getElementById("introSkip");
+  let R,scene,cam,P={},state,st,done,beep=()=>{},ck,ckTex,sec,late,built=false,last,raf;
+  const API={active:false,supported:()=>{if(!window.THREE)return false;try{const c=document.createElement("canvas");return !!(c.getContext("webgl")||c.getContext("experimental-webgl"))}catch(e){return false}},run};
+  window.LupangIntro=API;
+
+  function tex(w,h,draw){const c=document.createElement("canvas");c.width=w;c.height=h;draw(c.getContext("2d"),w,h);const t=new THREE.CanvasTexture(c);return t}
+  function build(){
+    R=new THREE.WebGLRenderer({antialias:true});R.setPixelRatio(Math.min(2,window.devicePixelRatio||1));stage.appendChild(R.domElement);
+    scene=new THREE.Scene();scene.background=new THREE.Color(0xdfe7ec);scene.fog=new THREE.Fog(0xdfe7ec,16,36);
+    cam=new THREE.PerspectiveCamera(62,1,.05,100);
+    scene.add(new THREE.HemisphereLight(0xffffff,0x9aa5a0,.95));
+    const dl=new THREE.DirectionalLight(0xffffff,.55);dl.position.set(4,9,6);scene.add(dl);
+    const M=(c,o)=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.7,metalness:.05},o||{}));
+    const box=(w,h,d,m,x,y,z)=>{const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);b.position.set(x,y,z);scene.add(b);return b};
+    const ft=tex(256,256,(g)=>{g.fillStyle="#eceeed";g.fillRect(0,0,256,256);g.fillStyle="#dde2df";g.fillRect(0,0,128,128);g.fillRect(128,128,128,128)});
+    ft.wrapS=ft.wrapT=THREE.RepeatWrapping;ft.repeat.set(15,15);
+    const fl=new THREE.Mesh(new THREE.PlaneGeometry(30,30),M(0xffffff,{map:ft,roughness:.3,metalness:.1}));fl.rotation.x=-Math.PI/2;scene.add(fl);
+    box(16,8,.2,M(0xf4f5f2),0,4,-12);box(.2,8,30,M(0xeef1f0),-8,4,0);box(.2,8,30,M(0xeef1f0),8,4,0);box(16,.2,30,M(0xf7f8f7),0,6.6,0);
+    const win=M(0xbfe0f0,{emissive:0x9cc9e0,emissiveIntensity:.45,roughness:.1});
+    for(let z=-9;z<=9;z+=3.2){box(.05,4,2.4,win,-7.88,3,z);box(.05,4,2.4,win,7.88,3,z)}
+    const lt=M(0xffffff,{emissive:0xffffff,emissiveIntensity:1});
+    for(let z=-10;z<=8;z+=3) box(5,.05,.25,lt,0,6.48,z);
+    const sign=new THREE.Mesh(new THREE.PlaneGeometry(7,1.75),new THREE.MeshBasicMaterial({map:tex(1024,256,(g)=>{g.fillStyle="#217346";g.fillRect(0,0,1024,256);g.fillStyle="#fff";g.textAlign="center";g.textBaseline="middle";g.font='900 104px "Noto Sans KR",sans-serif';g.fillText("🥕 루팡코리아",512,108);g.font='500 38px "Noto Sans KR",sans-serif';g.fillText("LUPANG KOREA · 월급은 소중하니까",512,200)})}));
+    sign.position.set(0,5,-11.88);scene.add(sign);
+    P.doors=[];
+    [-2.4,2.4].forEach(ex=>{box(2,3.2,.15,M(0x7d8682,{metalness:.6,roughness:.3}),ex,1.6,-11.85);
+      const dm=M(0xc9d0cd,{metalness:.85,roughness:.22});
+      P.doors.push([box(.78,2.8,.05,dm,ex-.4,1.4,-11.74),ex-.4,-1],[box(.78,2.8,.05,dm,ex+.4,1.4,-11.74),ex+.4,1]);
+      box(.18,.18,.04,M(0xffffff,{emissive:0xffd23f,emissiveIntensity:.9}),ex+1.15,1.3,-11.75)});
+    [[-5,-6],[5,-6],[-5,4.5],[5,4.5]].forEach(([x,z])=>{box(.8,6.6,.8,M(0xe5e8e6),x,3.3,z);
+      const pot=new THREE.Mesh(new THREE.CylinderGeometry(.35,.28,.6,16),M(0x4a524e));pot.position.set(x+(x<0?.9:-.9),.3,z);scene.add(pot);
+      const bush=new THREE.Mesh(new THREE.IcosahedronGeometry(.55,1),M(0x3f8f5a,{flatShading:true}));bush.position.set(pot.position.x,1.05,z);scene.add(bush)});
+    box(2.6,1.1,.8,M(0x2f3a35),-5.4,.55,-1.5);box(2.7,.06,.95,M(0xd9dedb),-5.4,1.13,-1.5);
+    const mon=box(.6,.4,.04,M(0x111111,{emissive:0x214a36,emissiveIntensity:.6}),-5.4,1.4,-1.3);mon.rotation.y=.3;
+    // speed gates
+    const ped=M(0xd5dad8,{metalness:.55,roughness:.3}),top=M(0x2b2f2d,{roughness:.4});
+    const glass=new THREE.MeshStandardMaterial({color:0x9fdcbc,transparent:true,opacity:.55,roughness:.1,metalness:.1});
+    [-2.4,-.8,.8,2.4].forEach(x=>{box(.25,1,1.4,ped,x,.5,0);box(.27,.04,1.42,top,x,1.02,0);
+      box(.02,.04,1.1,M(0x21a366,{emissive:0x21a366,emissiveIntensity:.8}),x+(x<0?.13:-.13),.95,0)});
+    P.flaps=[];
+    [-1.6,0,1.6].forEach(cx=>{[[-1,cx-.8+.125],[1,cx+.8-.125]].forEach(([side,px])=>{
+      const pv=new THREE.Group();pv.position.set(px,.72,.15);scene.add(pv);
+      const f=new THREE.Mesh(new THREE.BoxGeometry(.52,.55,.02),glass);f.position.set(-side*.26,0,0);pv.add(f);
+      if(cx===0)P.flaps.push([pv,side]);else (P.side=P.side||[]).push([pv,side,cx])})});
+    box(.2,.05,.26,M(0x111111,{roughness:.3}),.8,1.07,.42);
+    P.led=new THREE.Mesh(new THREE.PlaneGeometry(.15,.15),new THREE.MeshBasicMaterial({color:0xc4314b}));
+    P.led.rotation.x=-Math.PI/2;P.led.position.set(.8,1.1,.42);scene.add(P.led);
+    P.ring=new THREE.Mesh(new THREE.RingGeometry(.09,.11,32),new THREE.MeshBasicMaterial({color:0xffd23f,transparent:true,opacity:.9}));
+    P.ring.rotation.x=-Math.PI/2;P.ring.position.set(.8,1.105,.42);scene.add(P.ring);
+    // clock board
+    ck=document.createElement("canvas");ck.width=512;ck.height=160;ckTex=new THREE.CanvasTexture(ck);
+    box(2.6,.85,.08,M(0x1b1f1d),0,3,-.4);
+    const cb=new THREE.Mesh(new THREE.PlaneGeometry(2.4,.75),new THREE.MeshBasicMaterial({map:ckTex}));cb.position.set(0,3,-.35);scene.add(cb);
+    // card mesh
+    P.card=new THREE.Mesh(new THREE.PlaneGeometry(.17,.107),new THREE.MeshBasicMaterial({side:THREE.DoubleSide,map:tex(256,160,(g)=>{g.fillStyle="#fff";g.fillRect(0,0,256,160);g.fillStyle="#217346";g.fillRect(0,0,256,40);g.fillStyle="#fff";g.font="900 22px sans-serif";g.fillText("LUPANG KOREA",12,28);g.font="56px sans-serif";g.fillText("🥕",14,118);g.fillStyle="#222";g.font="700 22px sans-serif";g.fillText("루팡 사원",96,92)})}));
+    P.card.visible=false;scene.add(P.card);
+    // coworkers walking in other lanes
+    P.npc=[];
+    [[-1.6,4,0x6264a7],[1.6,7,0xc77700],[-1.6,10,0x2a7de1]].forEach(([x,z,c])=>{const g=new THREE.Group();
+      const body=new THREE.Mesh(new THREE.CylinderGeometry(.22,.26,1.1,12),M(c));body.position.y=.95;g.add(body);
+      const head=new THREE.Mesh(new THREE.SphereGeometry(.18,16,12),M(0xf1d3b8));head.position.y=1.68;g.add(head);
+      g.position.set(x,0,z);scene.add(g);P.npc.push(g)});
+    window.addEventListener("resize",resize);built=true;
+  }
+  function resize(){if(!R)return;const w=window.innerWidth,h=window.innerHeight;R.setSize(w,h,false);cam.aspect=w/h;cam.fov=w<h?78:62;cam.updateProjectionMatrix()}
+  function drawClock(){
+    const g=ck.getContext("2d"),m=Math.floor(sec/60),ss=Math.floor(sec%60);
+    g.fillStyle="#0c0f0d";g.fillRect(0,0,512,160);
+    g.fillStyle=sec>=540*60?"#ff4d64":"#3dff8a";g.font='700 92px "SF Mono",Menlo,Consolas,monospace';g.textAlign="center";g.textBaseline="middle";
+    g.fillText(String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0")+":"+String(ss).padStart(2,"0"),256,86);
+    ckTex.needsUpdate=true;
+  }
+  const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  function setMsg(t,k){msg.textContent=t;msg.className="intro-msg"+(k?" "+k:"")}
+  function go(s){state=s;st=0}
+  function tap(){
+    if(state!=="tap") return;
+    late=sec>=540*60;card.classList.add("fly");
+    setTimeout(()=>{card.hidden=true;card.classList.remove("fly")},360);
+    P.card.visible=true;go("swipe");
+  }
+  function run(cb,beepFn){
+    if(!built){try{build()}catch(e){cb();return}}
+    done=cb;beep=beepFn||beep;API.active=true;ov.hidden=false;resize();
+    fade.style.transition="none";fade.style.opacity=1;requestAnimationFrame(()=>{fade.style.transition="";fade.style.opacity=0});
+    P.flaps.forEach(([pv])=>pv.rotation.y=0);P.led.material.color.set(0xc4314b);P.ring.visible=true;
+    P.doors.forEach(([d,x])=>d.position.x=x);P.card.visible=false;card.hidden=true;
+    P.npc.forEach((n,i)=>n.position.z=[4,7,10][i]);
+    sec=8*3600+59*60+38;late=false;drawClock();setMsg("🚶 출근 중… 08:59");go("walk");
+    last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);
+  }
+  function finish(){
+    if(!API.active) return;API.active=false;fade.style.opacity=1;
+    setTimeout(()=>{ov.hidden=true;cancelAnimationFrame(raf);const r={ok:true,late};done&&done(r)},520);
+  }
+  function loop(now){
+    const dt=Math.min(.05,(now-last)/1000);last=now;st+=dt;
+    const T=now/1000;
+    // clock runs fast: 1 sec every .32s until tapped
+    if(state==="walk"||state==="tap"){const before=Math.floor(sec);sec+=dt/.32;if(Math.floor(sec)!==before){drawClock();if(Math.floor(sec)===540*60&&state==="tap"){setMsg("⏰ 09:00 넘었다! 빨리 찍어!","bad");beep(440,.15,"square",.05)}}}
+    P.npc.forEach((n,i)=>{n.position.z-=dt*1.4;n.position.y=Math.abs(Math.sin(T*7+i))*.04;if(n.position.z<-10)n.position.z=10});
+    P.side.forEach(([pv,side,cx])=>{const near=P.npc.some(n=>n.position.x===cx&&Math.abs(n.position.z)<1.8);const tgt=near?side*Math.PI/2:0;pv.rotation.y+=(tgt-pv.rotation.y)*Math.min(1,dt*10)});
+    P.ring.scale.setScalar(1+Math.sin(T*6)*.15);
+    let z=9,look=[0,1.3,-6];
+    if(state==="walk"){const k=ease(Math.min(1,st/2.4));z=9-(9-2.1)*k;look=[0,1.3-k*.25,-6+k*4.5];
+      if(st>=2.4){go("tap");card.hidden=false;setMsg(sec>=540*60?"⏰ 09:00 넘었다! 빨리 찍어!":"🪪 사원증을 리더기에 찍어주세요",sec>=540*60?"bad":"")}}
+    else if(state==="tap"){z=2.1;look=[.35,1.05,-1.5]}
+    else if(state==="swipe"){z=2.1;look=[.35,1.05,-1.5];
+      const k=Math.min(1,st/.45),from=new THREE.Vector3(.15,1.25,1.6),to=new THREE.Vector3(.8,1.16,.42);
+      P.card.position.lerpVectors(from,to,ease(k));P.card.rotation.set(-Math.PI/2*k-(1-k)*.4,0,(1-k)*.5);
+      if(st>=.45){P.led.material.color.set(0x21e07a);P.ring.visible=false;beep(1568,.09,"square",.06);setTimeout(()=>beep(2093,.12,"square",.06),90);
+        setMsg(late?"😅 삑— 지각 출입 기록됨":"✅ 삑! 정시 출근 +₩10,000",late?"bad":"good");go("open")}}
+    else if(state==="open"){z=2.1;look=[.2,1.1,-3];
+      const k=ease(Math.min(1,st/.45));P.flaps.forEach(([pv,side])=>pv.rotation.y=side*k*Math.PI/2);
+      P.card.position.y=1.16+k*.3;P.card.position.x=.8-k*.6;
+      if(st>=.5){P.card.visible=false;go("through")}}
+    else if(state==="through"){const k=ease(Math.min(1,st/2.8));z=2.1-(2.1+9)*k;look=[0,1.5,z-6];
+      if(z<-3){const dk=Math.min(1,(-3-z)/3);P.doors.forEach(([d,x,side])=>d.position.x=x+side*dk*.75)}
+      if(st>=1.2&&st<1.25)setMsg("🛗 엘리베이터 타는 중…");
+      if(st>=2.6) finish()}
+    const bob=(state==="walk"||state==="through")?Math.sin(T*9)*.03:0;
+    cam.position.set(0,1.62+bob,z);cam.lookAt(look[0],look[1],look[2]);
+    R.render(scene,cam);
+    if(API.active||ov.hidden===false) raf=requestAnimationFrame(loop);
+  }
+  card.addEventListener("click",tap);
+  skip.addEventListener("click",()=>{late=false;if(state==="walk"||state==="tap")late=sec>=540*60;finish()});
+  document.addEventListener("keydown",e=>{if(!API.active)return;if(e.key===" "||e.key==="Enter"){e.preventDefault();tap()}});
+})();
+</script>
 <script>
 (function(){
   const COLS=7, ROWS=10;
@@ -320,7 +495,7 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
   function reset(){
     S={pos:{c:3,r:4},coins:new Map(),errs:new Map(),score:0,strikes:0,min:DAY_START,running:false,boss:false,
        phase:"idle",phaseT:4,progress:3,spawnT:.4,errT:9,chatT:5,ended:false,
-       scan:null,combo:0,comboT:0,lunch:false,lunchDone:false,inv:0,
+       scan:null,combo:0,comboT:0,lunch:false,lunchDone:false,inv:0,mtg:false,mtgRem:0,
        rush:0,rushCd:0,magnet:0,magT:0,shown:0,rankIdx:0,spinning:false};
   }
   reset();
@@ -372,17 +547,19 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
   function setFormula(t){$("formula").textContent=t}
   function setMsg(t,red){const m=$("msg");m.textContent=t;m.classList.toggle("red",!!red)}
 
-  const PEOPLE={"팀장님":["팀","#c4314b"],"동기 민지":["민","#8f5bd6"],"IT 헬프데스크":["IT","#2a7de1"],"재무팀 박과장":["박","#21a366"],"인사팀":["인","#d6831f"],"Outlook 일정":["📅","#0f6cbd"],"CEO 비서실":["CEO","#333333"],"루팡봇":["🥕","#ff8a3d"],"팀 회식방":["🍻","#c77700"]};
+  const PEOPLE={"팀장님":["팀","#c4314b"],"동기 민지":["민","#8f5bd6"],"IT 헬프데스크":["IT","#2a7de1"],"재무팀 박과장":["박","#21a366"],"인사팀":["인","#d6831f"],"Outlook 일정":["📅","#0f6cbd"],"CEO 비서실":["CEO","#333333"],"루팡봇":["🥕","#ff8a3d"],"급여팀":["급","#b8860b"],"총무팀":["총","#5d6661"],"보안팀":["보","#7a2e3a"],"팀 회식방":["🍻","#c77700"]};
   let nid=0;
   function notify(o){
     const box=$("notifs");let el=o.id&&box.querySelector('[data-id="'+o.id+'"]');
     const who=o.who||o.title;const pp=PEOPLE[who]||[who.slice(0,1),"#6264a7"];
     const fresh=!el;
     if(fresh){el=document.createElement("div");el.dataset.id=o.id||("m"+(++nid));box.appendChild(el)}
-    el.className="tn "+(o.kind||"");
-    el.innerHTML='<div class="tn-top"><span class="tn-app"><i>T</i>Teams</span><span>· 지금</span><span class="sp"></span><button class="tn-x" aria-label="닫기">×</button></div>'+
-      '<div class="tn-main"><div class="tn-av" style="background:'+pp[1]+'">'+pp[0]+'</div><div class="tn-txt"><b></b><span></span></div></div>';
+    const ol=o.app==="outlook";
+    el.className="tn "+(ol?"outlook ":"")+(o.kind||"");
+    el.innerHTML='<div class="tn-top"><span class="tn-app"><i>'+(ol?"O":"T")+'</i>'+(ol?"Outlook":"Teams")+'</span><span>· 지금</span><span class="sp"></span><button class="tn-x" aria-label="닫기">×</button></div>'+
+      '<div class="tn-main"><div class="tn-av" style="background:'+pp[1]+'">'+pp[0]+'</div><div class="tn-txt"><b></b>'+(o.subject?'<em></em>':'')+'<span></span></div></div>';
     el.querySelector(".tn-txt b").textContent=o.title;el.querySelector(".tn-txt span").textContent=o.body;
+    if(o.subject) el.querySelector(".tn-txt em").textContent=o.subject;
     el.querySelector(".tn-x").onclick=()=>dismiss(el);
     if(o.replies&&o.replies.length){
       const rp=document.createElement("div");rp.className="tn-reply";
@@ -581,9 +758,14 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
     {w:"재무팀 박과장",m:"그 파일 v4 언제 나와요? 오늘 중으로 부탁드려요",r:[["곧 드릴게요!",()=>{S.progress+=8;return bonus(5000)()}]]},
     {w:"동기 민지",m:"오늘 점심 뭐 먹어? 🍜",r:[["마라탕",bonus(3000)],["김치찌개",bonus(3000)]]},
     {w:"IT 헬프데스크",m:"3층 프린터 또 안 된대요… 확인 부탁드립니다",r:[["재부팅 해보세요",bonus(5000,"IT의 정석 +₩5,000")]]},
-    {w:"인사팀",m:"[공지] 연말정산 서류 제출 마감 D-3입니다",fake:true},
     {w:"동기 민지",m:"팀장님 아까 한숨 쉬심 ㅋㅋ 조심해",r:[["ㅋㅋㅋ ㄹㅇ",null]]},
-    {w:"Outlook 일정",m:"15:00 주간회의 (필참) · 회의실 3B",r:[["수락",()=>{S.progress+=5;return "업무 진행률 +5%"}]]},
+    {app:"outlook",w:"재무팀 박과장",s:"RE: RE: FW: 매출실적_최종_v3 확인 요청",m:"첨부파일 다시 확인 부탁드립니다. v4로 회신 주세요",r:[["읽음으로 표시",()=>{S.progress+=4;return "업무 진행률 +4%"}],["삭제",bonus(3000,"받은편지함 정리 +₩3,000")]]},
+    {app:"outlook",w:"급여팀",s:"[급여] 11월 급여명세서가 도착했습니다 💰",m:"보안 문서를 열어 확인하세요",r:[["열어보기",()=>{const v=50000;S.score+=v;promo("💰 월급날 💰","+"+won(v));rain(90);SFX.lunch();return "+"+won(v)}]]},
+    {app:"outlook",w:"총무팀",s:"[공지] 1층 카페 아메리카노 무료 ☕",m:"오늘 오후 3시까지 선착순 100잔",r:[["가즈아",()=>{S.magnet=6;S.magT=0;floatAt(S.pos.c,S.pos.r,"☕ 자석 6초","combo");SFX.gold();return "☕ 자석 6초"}]]},
+    {app:"outlook",kind:"reminder",w:"Outlook 일정",s:"🔔 1:1 면담 요청 · 팀장님",m:"내일 10:00 – 10:30 · 소회의실 2",r:[["수락",()=>{S.progress+=5;return "…화이팅"}],["거절",bonus(20000,"패기 +₩20,000")]]},
+    {app:"outlook",w:"보안팀",s:"[필수] 정보보안 교육 미이수 안내",m:"이번 주 금요일까지 수강 바랍니다",r:[["나중에",null]]},
+    {app:"outlook",w:"인사팀",s:"[공지] 연말정산 서류 제출 마감 D-3",m:"기한 내 제출 부탁드립니다",fake:true},
+    {app:"outlook",kind:"reminder",w:"Outlook 일정",s:"🔔 주간 보고서 제출 · 17:00",m:"마감 1시간 전입니다",r:[["다시 알림",null],["해제",()=>{S.progress+=3;return "일단 해제 ㅋ"}]]},
     {w:"팀 회식방",m:"금요일 회식 장소 투표 🍻  고기 vs 횟집",r:[["고기!!",bonus(10000)],["횟집",bonus(10000)]]},
     {w:"CEO 비서실",m:"[전사] 2026 연말 성과급 관련 안내 📢",r:[["열어보기",()=>{if(Math.random()<.45){const v=100000;S.score+=v;promo("💸 성과급 지급 💸","+"+won(v));rain(120);SFX.lunch();return "+"+won(v)}floatAt(S.pos.c,S.pos.r,"희망고문 ㅋ","bad");SFX.bad();return "내년에 다시 검토 예정 ㅋ"}]]},
     {w:"동기 민지",m:"퇴근하고 치맥? 🍗",r:[["콜!!",bonus(10000,"치맥 확정 +₩10,000")]]}
@@ -622,6 +804,12 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
       S.phase="idle";S.phaseT=2;
     }
 
+    // boss's meeting (Outlook)
+    if(!S.mtgRem&&S.min>=890){S.mtgRem=1;notify({app:"outlook",kind:"reminder",who:"Outlook 일정",title:"Outlook 일정",subject:"🔔 [공유 일정] 팀장님 임원회의 · 10분 후",body:"15:00 – 15:30 · 대회의실",replies:[["다시 알림",null],["해제",null]],ms:5000});beep(784,.12,"sine",.05)}
+    const nowMtg=S.min>=900&&S.min<930;
+    if(nowMtg&&!S.mtg){S.mtg=true;if(S.scan)endScan();hideToast();notify({app:"outlook",kind:"reminder",who:"Outlook 일정",title:"Outlook 일정",subject:"📅 팀장님 임원회의 시작",body:"30분간 감시 없음 🚪 지금이 기회",ms:3500});SFX.lunch();setMsg("팀장님 회의 중 · 마음껏 루팡")}
+    else if(!nowMtg&&S.mtg){S.mtg=false;toast("팀장님","회의 끝났습니다~ 다들 자리로","warn",2000);S.phase="idle";S.phaseT=2}
+
     // coins & errors
     S.coins.forEach((v,k)=>{v.t-=dt;if(v.t<=0)S.coins.delete(k)});
     S.errs.forEach((v,k)=>{v.life-=dt;if(v.life<=0)S.errs.delete(k)});
@@ -630,10 +818,10 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
     if(S.min>600&&!S.lunch){S.errT-=dt;if(S.errT<=0){spawnErr();S.errT=3+Math.random()*4}}
 
     // random chat
-    if(S.phase==="idle"&&!S.lunch){S.chatT-=dt;if(S.chatT<=0){const m=CHATS[Math.floor(Math.random()*CHATS.length)];notify({who:m.w,title:m.w,body:m.m,replies:m.r,fake:m.fake,ms:m.r?6000:3200});SFX.ping();setTimeout(()=>beep(1318,.09,"sine",.05),110);S.chatT=7+Math.random()*7}}
+    if(S.phase==="idle"&&!S.lunch){S.chatT-=dt;if(S.chatT<=0){const m=CHATS[Math.floor(Math.random()*CHATS.length)];notify({app:m.app,kind:m.kind,subject:m.s,who:m.w,title:m.w,body:m.m,replies:m.r,fake:m.fake,ms:m.r?6500:3500});if(m.app==="outlook"){beep(784,.12,"sine",.05);setTimeout(()=>beep(988,.14,"sine",.05),130)}else{SFX.ping();setTimeout(()=>beep(1318,.09,"sine",.05),110)}S.chatT=7+Math.random()*7}}
 
     // boss sweep
-    if(!S.lunch){
+    if(!S.lunch&&!S.mtg){
       S.phaseT-=dt;
       if(S.phase==="idle"&&S.phaseT<=0) startScan();
       else if(S.phase==="warn"&&S.phaseT<=0){
@@ -677,7 +865,7 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
       '<div>직급: <b>'+rank(S.score)+'</b> · 최고 기록 '+won(Math.max(prev,S.score))+(isBest?" (신기록)":"")+'</div>'+
       '<div class="row"><button class="btn" id="again">내일 또 출근</button><button class="btn ghost" id="copy">결과 복사</button></div>';
     n.hidden=false;
-    $("again").onclick=start;
+    $("again").onclick=beginDay;
     $("copy").onclick=async e=>{
       const txt="월급루팡.xlsx에서 오늘 "+won(S.score)+" 루팡함 🥕 ("+rank(S.score)+") · by 딴짓연구소 @ttanjit.lab";
       try{await navigator.clipboard.writeText(txt);e.target.textContent="복사됨"}catch(err){e.target.textContent="복사 실패"}
@@ -687,18 +875,29 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
     render();
   }
 
-  function start(){
+  function start(r){
     reset();$("note").hidden=true;S.running=true;
     setBoss(false);setMsg("팀장님 자리 비움 · 루팡 가능");setFormula("=출근(09:00)");
     SFX.ping();spawnCoin();spawnCoin();render();
+    if(r&&r.ok){
+      if(!r.late){S.score+=10000;floatAt(S.pos.c,S.pos.r,"정시 출근 +₩10,000","combo");notify({who:"루팡봇",title:"루팡봇",body:"정시 출근 성공! +₩10,000 ⏰",ms:2600})}
+      else notify({who:"인사팀",title:"인사팀",body:"근태: 09:00 이후 출입 기록 확인됨 😅",ms:2800});
+    }
   }
-  $("start").onclick=start;
+  function beginDay(){
+    $("note").hidden=true;
+    try{ac=ac||new (window.AudioContext||window.webkitAudioContext)()}catch(e){}
+    if(window.LupangIntro&&window.LupangIntro.supported()) window.LupangIntro.run(start,beep);
+    else start();
+  }
+  $("start").onclick=beginDay;
 
   document.addEventListener("keydown",e=>{
+    if(window.LupangIntro&&window.LupangIntro.active) return;
     const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]}[e.key];
     if(m){e.preventDefault();move(m[0],m[1]);return}
     if(e.key==="Escape"){e.preventDefault();setBoss(!S.boss)}
-    if(e.key==="Enter"&&!S.running){start()}
+    if(e.key==="Enter"&&!S.running&&$("note").hidden===false){beginDay()}
   });
   document.querySelectorAll(".dpad button").forEach(b=>{
     b.addEventListener("pointerdown",e=>{e.preventDefault();const [x,y]=b.dataset.d.split(",").map(Number);move(x,y)});
