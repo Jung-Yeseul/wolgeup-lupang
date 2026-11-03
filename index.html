@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta property="og:title" content="월급루팡.xlsx">
-<meta property="og:description" content="출근하시겠습니까? 지옥철부터 팀장님 엘리베이터까지, 직장인 출근 생존 게임 🥕">
+<meta property="og:description" content="출근하시겠습니까? 알람 스누즈부터 17:58 팀장님까지, 직장인 킹받음 시뮬레이터 🥕">
 <style>body{margin:0}[hidden]{display:none!important}</style>
 <title>월급루팡.xlsx</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -263,6 +263,17 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
 .cm-ask.in h2{animation:slam .5s .15s cubic-bezier(.2,1.6,.4,1) both}
 .cm-ask.in .t-btns{animation:fin .6s .6s both}
 .intro .idcard{z-index:7}
+.intro.home{background:radial-gradient(ellipse at 50% 60%,#141c2c,#030405 70%)}
+.intro.home .stage,.intro.home .cm-fallback{display:none}
+.cm-phone{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:min(250px,70vw);height:min(470px,62vh);background:#0d0d0f;border:6px solid #2a2a2e;border-radius:36px;padding:10px;z-index:6;box-shadow:0 0 80px rgba(120,160,255,.28)}
+.cm-phone.ring{animation:buzz .16s linear infinite}
+@keyframes buzz{25%{transform:translate(-51%,-50%) rotate(-2deg)}75%{transform:translate(-49%,-50%) rotate(2deg)}}
+.ph-scr{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(#1c2b4d,#0a0f1e);border-radius:26px;padding:18px;color:#fff}
+.ph-lbl{font-size:13px;color:#9fb0d6;letter-spacing:.1em}
+.ph-time{font-size:58px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.ph-sub{font-size:12.5px;color:#9fb0d6;margin-bottom:14px}
+.ph-snooze{width:100%;padding:24px 0;font-size:24px;font-weight:900;border-radius:18px;background:#ff9f0a;color:#1a1a1a;border:0;box-shadow:0 6px 20px rgba(255,159,10,.35)}
+.ph-off{font-size:11px;background:transparent;border:0;color:#6f7a93;text-decoration:underline;margin-top:6px}
 .intro-skip{z-index:10}
 .intro-fade{z-index:11}
 .cm-ask{z-index:12}
@@ -325,6 +336,12 @@ kbd{font-family:inherit;font-size:11.5px;background:#fff;border:1px solid #cfc79
   .ollist{border-right:0;border-bottom:1px solid var(--grid-line)}
 }
 body.app-outlook .dpad{visibility:hidden}
+/* scenario v2 */
+.ev-dim{position:fixed;inset:0;background:rgba(10,14,12,.38);z-index:59}
+.cm-card.ev{position:fixed;z-index:60;bottom:calc(env(safe-area-inset-bottom,0px) + 24px)}
+.cm-card.ev .cm-big{font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-size:22px;background:#ffd23f;border:0;border-radius:8px;padding:16px}
+.win.hang{filter:grayscale(1) brightness(1.12) contrast(.8)}
+body.sleepy .win{filter:brightness(.4) blur(1.5px);transition:filter 1.2s}
 /* before clock-in, the Excel window does not exist yet */
 body.pre .win,body.pre .pad,body.pre .taskbar{visibility:hidden}
 body.pre{background:#030504}
@@ -417,6 +434,7 @@ body.pre{background:#030504}
   <div class="sheets"><span>Sheet1</span><span class="on">월급루팡</span><span>데이터</span><span>+</span></div>
   <div class="status">
     <span class="msg" id="msg">준비</span>
+    <span>멘탈 <b id="mentalV">100</b></span>
     <span>경고 <b class="strikes" id="strikes">○○○</b></span>
     <span>합계: <b id="sum">0</b></span>
   </div>
@@ -459,10 +477,14 @@ body.pre{background:#030504}
   </div>
   <div class="status">
     <span class="msg" id="olMsg">받은 편지함</span>
+    <span>멘탈 <b id="olMental">100</b></span>
     <span>경고 <b class="strikes" id="olStrikes">○○○</b></span>
     <span>합계: <b id="olSum">0</b></span>
   </div>
 </div>
+
+<div class="ev-dim" id="evDim" hidden></div>
+<div class="cm-card ev" id="evCard" hidden><div class="cm-tag" id="evTag"></div><h3 id="evTitle"></h3><p id="evText"></p><div class="cm-choices" id="evChoices"></div></div>
 
 <div class="taskbar" id="taskbar">
   <button class="tb on" data-app="excel" id="tbExcel"><i class="xl">X</i>월급루팡.xlsx</button>
@@ -476,10 +498,11 @@ body.pre{background:#030504}
   <div class="cm-fallback"><div class="fb-emoji" id="fbEmoji">🚇</div></div>
   <div class="cm-hud">
     <div class="cm-stage" id="cmStage">STAGE 1 · 9호선 급행</div>
-    <div class="cm-stats"><span>멘탈</span><div class="cm-hp"><i id="cmHp"></i></div><b id="cmMental">100</b><b class="cm-clock" id="cmClock">08:31</b></div>
+    <div class="cm-stats"><span>멘탈</span><div class="cm-hp"><i id="cmHp"></i></div><b id="cmMental">100</b><span style="margin-left:6px">눈치</span><b id="cmNunchi">50</b><b class="cm-clock" id="cmClock">08:31</b></div>
   </div>
   <div class="cm-sub" id="cmSub"></div>
   <div class="cm-pop" id="cmPop"></div>
+  <div class="cm-phone" id="cmPhone" hidden><div class="ph-scr"><div class="ph-lbl">알람</div><div class="ph-time" id="phTime">07:00</div><div class="ph-sub">출근 ⏰ (5개 중 1)</div><button class="ph-snooze" id="phSnooze">스누즈</button><button class="ph-off" id="phOff">끄기</button></div></div>
   <div class="cm-card" id="cmCard" hidden>
     <div class="cm-tag" id="cmTag">빌런 출현</div>
     <h3 id="cmTitle"></h3>
@@ -534,7 +557,7 @@ body.pre{background:#030504}
 
   let has3D=false,inited=false,R=null,cam=null,cur=null,runId=0,done=null,beep=()=>{},curAction=null,last=0,looping=false;
   let tweens=[],shakeT=0,sway=0,SC={};
-  const W={mental:100,min:511};
+  const W={mental:100,min:420,nunchi:50,f:{}};
   const CAM={p:[0,1.6,5],l:[0,1.5,-6]};
 
   // ---------- small utils ----------
@@ -548,7 +571,7 @@ body.pre{background:#030504}
   function clockStr(m){m=Math.round(m);return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0")}
   function hud(){
     const hp=$("cmHp");hp.style.width=Math.max(0,W.mental)+"%";hp.className=W.mental<30?"low":W.mental<60?"mid":"";
-    $("cmMental").textContent=Math.round(W.mental);
+    $("cmMental").textContent=Math.round(W.mental);$("cmNunchi").textContent=Math.round(W.nunchi);
     $("cmClock").textContent=clockStr(W.min);$("cmClock").classList.toggle("late",W.min>=540);
     if(SC.lobby&&SC.lobby.drawClock) SC.lobby.drawClock();
   }
@@ -556,15 +579,17 @@ body.pre{background:#030504}
   function apply(o){
     if(o.m) W.mental=Math.max(0,Math.min(100,W.mental+o.m));
     if(o.t) W.min+=o.t;
+    if(o.n) W.nunchi=Math.max(0,Math.min(100,W.nunchi+o.n));
+    if(o.f) Object.assign(W.f,o.f);
     hud();
-    const parts=[];if(o.m)parts.push("멘탈 "+(o.m>0?"+":"")+o.m);if(o.t)parts.push("+"+o.t+"분");
+    const parts=[];if(o.m)parts.push("멘탈 "+(o.m>0?"+":"")+o.m);if(o.n)parts.push("눈치 "+(o.n>0?"+":"")+o.n);if(o.t)parts.push("+"+o.t+"분");
     if(parts.length) pop(parts.join(" · "),(o.m||0)<0||(o.t||0)>0);
     if((o.m||0)<0){beep(200,.22,"sawtooth",.06,110)}else{beep(880,.1,"triangle",.05);setTimeout(()=>beep(1175,.12,"triangle",.05),90)}
   }
   function sub(t){const s=$("cmSub");if(t)s.textContent=t;s.classList.toggle("on",!!t)}
   function stageLabel(t,emoji,key){$("cmStage").textContent=t;$("fbEmoji").textContent=emoji;ov.dataset.stage=key}
   function thump(){beep(70,.25,"sine",.32,40);setTimeout(()=>beep(70,.25,"sine",.28,40),260);setTimeout(()=>beep(55,.8,"sawtooth",.15,30),560)}
-  function hidePanels(){["cmCard","cmMash","cmTiming","idcard","cmAsk"].forEach(id=>$(id).hidden=true);sub("");curAction=null}
+  function hidePanels(){["cmCard","cmMash","cmTiming","idcard","cmAsk","cmPhone"].forEach(id=>$(id).hidden=true);sub("");curAction=null}
 
   // ---------- UI interactions ----------
   function choice(tag,title,text,opts){
@@ -607,17 +632,17 @@ body.pre{background:#030504}
       c.onclick=go;curAction=go;
     });
   }
-  const HOME=["카드값 결제일이 D-5입니다","집에 가도 메일은 쌓입니다","연차는 이미 0일입니다","…발걸음이 회사로 향합니다"];
-  function ask(small,q){
+  const HOME=["카드값 결제일이 D-5입니다","장기수선충당금은 아직 4년 남았습니다","연차는 이미 0일입니다","재택은 화요일만 됩니다","…발걸음이 회사로 향합니다"];
+  function ask(small,q,first){
     return new Promise(res=>{
-      const a=$("cmAsk"),no=$("cmNo");let n=0;
+      const a=$("cmAsk"),no=$("cmNo");let n=0;const pool=(first?[first]:[]).concat(HOME);
       $("cmAskSmall").textContent=small;$("cmAskQ").innerHTML=q;$("cmAskSub").textContent="";no.textContent="집에 간다";
       a.hidden=false;a.classList.remove("in");void a.offsetWidth;a.classList.add("in");thump();
       const yes=()=>{a.hidden=true;curAction=null;beep(523,.1,"square",.05);setTimeout(()=>beep(784,.12,"square",.05),90);res()};
       no.onclick=()=>{
-        if(n>=HOME.length){yes();return}
-        $("cmAskSub").textContent=HOME[n];no.classList.remove("denied");void no.offsetWidth;no.classList.add("denied");
-        beep(180,.22,"sawtooth",.07,110);n++;if(n>=HOME.length)no.textContent="출근한다";
+        if(n>=pool.length){yes();return}
+        $("cmAskSub").textContent=pool[n];no.classList.remove("denied");void no.offsetWidth;no.classList.add("denied");
+        beep(180,.22,"sawtooth",.07,110);n++;if(n>=pool.length)no.textContent="출근한다";
       };
       $("cmYes").onclick=yes;curAction=yes;
     });
@@ -804,36 +829,49 @@ body.pre{background:#030504}
 
   // ---------- story data ----------
   const VILLAINS=[
-    {tag:"🦵 쩍벌 빌런",prop:"",title:"옆자리 다리가 180도",text:"앉아 있는 아저씨 다리가 당신 무릎까지 침범했다. 영토 분쟁 발생.",opts:[
+    {tag:"🦵 쩍벌 빌런",prop:"",title:"옆자리 다리가 180도",text:"다리가 내 무릎까지 침범했다. 영토 분쟁 발생.",opts:[
       {l:"나도 같이 벌린다",h:"맞불 작전",m:-5,r:"팽팽한 대치 끝에 3cm 영토 회복"},
-      {l:"조용히 참는다",h:"평화주의",m:-15,r:"무릎이 점점 접힌다…"},
-      {l:"옆 칸으로 이동",h:"전략적 후퇴",m:-3,t:1,r:"옆 칸은 더 꽉 차 있었다"}]},
+      {l:"조용히 참는다",h:"평화주의",m:-15,r:"무릎이 점점 접힌다…"}]},
     {tag:"📢 스피커폰 빌런",prop:"phone",title:"스피커폰 영상통화 중",text:"\"어~ 엄마!!! 나 지금 지하철!!! 어!! 밥 먹었어!!!\" 칸 전체가 통화에 참여 중.",opts:[
       {l:"헛기침 크게 한다",h:"소극적 저항",m:-8,r:"더 크게 말하기 시작했다"},
-      {l:"이어폰 볼륨 MAX",h:"현실 도피",m:-4,r:"고막이 조금 아프다"},
       {l:"같이 인사한다",h:"\"어머님 안녕하세요~\"",m:5,r:"어머님이 반겨주셨다 (?)"}]},
-    {tag:"🎒 백팩 빌런",prop:"bag",title:"백팩이 얼굴을 강타",text:"앞사람 백팩이 정확히 얼굴 높이. 열차가 흔들릴 때마다 퍽, 퍽.",opts:[
+    {tag:"🎒 백팩 빌런",prop:"bag",title:"백팩이 얼굴을 강타",text:"흔들릴 때마다 앞사람 백팩이 얼굴을 퍽, 퍽.",opts:[
       {l:"백팩을 살짝 민다",h:"정당방위",m:-6,r:"돌아봤다. 눈이 마주쳤다. 어색."},
-      {l:"고개를 숙인다",h:"인내",m:-12,r:"목이 뻐근하다"},
       {l:"백팩에 기대서 잔다",h:"역발상",m:8,r:"생각보다 푹신하다 😴"}]},
-    {tag:"🚪 문지기 빌런",prop:"",title:"문 앞에서 절대 안 비킴",text:"내려야 하는데 문 앞 사람이 미동도 없다. 이어폰 끼고 눈 감음.",opts:[
+    {tag:"🚪 문지기 빌런",prop:"",title:"문 앞에서 절대 안 비킴",text:"내려야 하는데 문 앞 사람이 이어폰 끼고 눈 감고 있다.",opts:[
       {l:"\"내릴게요!!\" 외친다",h:"정공법",m:-5,r:"겨우 틈이 생겼다"},
-      {l:"어깨로 밀고 나간다",h:"럭비 모드",m:-10,r:"뒤에서 혀 차는 소리가 들린다"},
-      {l:"다음 역에서 내린다",h:"포기",m:-2,t:2,r:"한 정거장 돌아가는 중…"}]}
+      {l:"다음 역에서 내린다",h:"포기",m:-2,t:3,r:"한 정거장 돌아가는 중…"}]},
+    {tag:"🧀 음식 빌런",prop:"",title:"옆사람이 토스트를 먹는다",text:"치즈 냄새가 칸 전체에 퍼진다. 아침을 굶었다.",opts:[
+      {l:"구경한다",m:-8,r:"배에서 소리가 났다. 다 들었다."},
+      {l:"나도 꺼낸다",m:0,r:"…가방에 아무것도 없다"}]},
+    {tag:"🏃 레이스 빌런",prop:"",title:"문 열리자마자 다이빙",text:"어깨를 치고 빈자리로 몸을 날린다. 0.3초 차이였다.",opts:[
+      {l:"따라간다",m:-6,r:"한 발 늦었다"},
+      {l:"가방을 먼저 던진다",h:"자리 선점술",m:5,r:"적중. 조용한 승리."}]}
   ];
   const STREET=[
-    {kind:"pigeon",tag:"🐦 비둘기 떼",title:"출입구를 점령한 비둘기 떼",text:"비둘기 아홉 마리가 길을 막고 있다. 한 마리가 당신을 노려본다.",opts:[
-      {l:"정면 돌파",h:"용기",m:-10,r:"푸드덕!! 머리 위로 날아갔다"},
-      {l:"멀리 돌아간다",m:-2,t:1,r:"비둘기가 승리했다"},
-      {l:"과자를 던져준다",h:"외교",m:6,t:1,r:"비둘기와 친구가 되었다 🐦"}]},
-    {kind:"smoke",tag:"🚬 흡연 빌런",title:"입구 앞 흡연 구역",text:"회사 입구 바로 옆에서 담배 연기가 밀려온다. 금연 구역 표지판 바로 앞이다.",opts:[
+    {kind:"pigeon",tag:"🐦 비둘기 떼",title:"출입구를 점령한 비둘기 떼",text:"비둘기 아홉 마리가 길을 막고 있다. 한 마리가 노려본다.",opts:[
+      {l:"정면 돌파",m:-10,r:"푸드덕!! 머리 위로 날아갔다"},
+      {l:"과자를 던져준다",h:"외교",m:6,t:1,r:"비둘기와 친구가 되었다"}]},
+    {kind:"smoke",tag:"🚬 흡연 빌런",title:"입구 앞 흡연",text:"금연 구역 표지판 바로 앞에서 연기가 밀려온다.",opts:[
       {l:"숨 참고 돌파",m:-8,r:"폐활량 신기록 달성"},
       {l:"뒷문으로 돌아간다",m:-2,t:1,r:"뒷문은 잠겨 있었다"}]},
-    {kind:"flyer",tag:"📄 전단지 빌런",title:"헬스장 전단지 공격",text:"\"회원님 체험권 하나만~\" 손이 전단지로 가득하다.",opts:[
-      {l:"받는다",m:-3,r:"가방에 전단지가 하나 늘었다"},
+    {kind:"flyer",tag:"📄 전단지 빌런",title:"헬스장 전단지 공격",text:"\"회원님 체험권 하나만~\"",opts:[
       {l:"못 본 척 지나간다",m:-6,r:"\"회원님~!\" 계속 따라온다"},
       {l:"오히려 상담받는다",h:"PT 10회 등록",m:4,t:2,r:"이번엔 진짜 다닐 거다"}]}
   ];
+  const Q=["이래도 계속<br>출근하시겠습니까<span>?</span>","아직도 출근할<br>생각이 있으십니까<span>?</span>","진심으로 묻겠습니다.<br>출근하시겠습니까<span>?</span>","지금이라도 돌아갈 수 있습니다.<br><small style=\"font-size:.45em;opacity:.7\">(없습니다)</small>"];
+  const stat=()=>clockStr(W.min)+" · 멘탈 "+Math.round(W.mental)+" · 눈치 "+Math.round(W.nunchi);
+
+  // phone alarm (STAGE 0)
+  function phone(){
+    return new Promise(res=>{
+      const p=$("cmPhone");p.hidden=false;$("phTime").textContent=clockStr(W.min);p.querySelector(".ph-sub").textContent="출근 알람 ⏰ ("+(Math.min(5,Math.round((W.min-420)/5)+1))+"/5)";
+      let ring=true;const tone=()=>{if(!ring)return;beep(880,.12,"square",.05);setTimeout(()=>beep(1175,.12,"square",.05),150);setTimeout(()=>beep(880,.12,"square",.05),300)};
+      tone();const iv=setInterval(tone,1100);p.classList.add("ring");
+      const done=v=>{ring=false;clearInterval(iv);p.classList.remove("ring");p.hidden=true;curAction=null;res(v)};
+      $("phSnooze").onclick=()=>done("snooze");$("phOff").onclick=()=>done("off");curAction=()=>done("snooze");
+    });
+  }
 
   // ---------- story flow ----------
   async function run(cb,beepFn){
@@ -841,97 +879,164 @@ body.pre{background:#030504}
     API.active=true;ov.hidden=false;hidePanels();
     if(!inited){inited=true;try{if(window.THREE&&webglOK()){init3D();has3D=true}}catch(e){has3D=false}}
     ov.classList.toggle("no3d",!has3D);
-    W.mental=100;W.min=8*60+31;hud();
+    W.mental=100;W.min=7*60;W.nunchi=50;W.f={umbrella:false,charger:true,unread:false};hud();
     if(!looping){looping=true;last=performance.now();requestAnimationFrame(loop)}
     fade.style.transition="none";fade.style.opacity=1;
+    const C=async(tag,title,text,opts)=>{const o=await choice(tag,title,text,opts);if(!alive())return null;apply(o);if(o.r)sub(o.r);await sleep(o.r?1700:500);sub("");return o};
+
+    // ===== STAGE 0: home =====
+    cur=null;ov.classList.add("home");stageLabel("STAGE 0 · 기상","⏰","home");
+    await sleep(60);await fadeTo(0,700);if(!alive())return;
+    let snooze=0;
+    while(true){
+      const a=await phone();if(!alive())return;
+      if(a==="off"){
+        const c=await choice("⏰ 알람","진짜 일어날 거예요?","이불 밖은 위험합니다.",[{l:"5분만 더",s:1},{l:"일어난다"}]);if(!alive())return;
+        if(!c.s) break;
+      }
+      snooze++;apply({m:3,t:5});sub(["5분만…","진짜 5분만…","…마지막 5분","알람이 짜증을 내는 것 같다","지각 각이다"][Math.min(snooze-1,4)]);await sleep(1100);if(!alive())return;sub("");
+      if(snooze>=5){sub("더 이상 설정된 알람이 없습니다 😱");shake();await sleep(1500);sub("");break}
+    }
+    let o=await C("📱 팀 단톡 · 47","안 읽은 메시지 47개","마지막 메시지 23:48 팀장님: \"내일 아침에 잠깐 얘기 좀 해요\"",[
+      {l:"읽는다",m:-15,r:"무슨 얘기인지는 끝까지 안 나온다"},
+      {l:"안 읽는다",m:-5,f:{unread:true},r:"'읽지 않음 47'이 하루 종일 따라다닌다"}]);if(!o)return;
+    W.min+=20;hud();sub("씻고, 입고, 나가기까지 20분…");await sleep(1200);if(!alive())return;sub("");
+    o=await C("☔ 날씨 앱","강수확률 40%","애매하다. 우산 챙길까?",[
+      {l:"챙긴다",f:{umbrella:true},r:"오늘 비는 안 올 예정입니다 (하루 종일)"},
+      {l:"안 챙긴다",f:{umbrella:false},r:"…어딘가 불길하다"}]);if(!o)return;
+    o=await C("🔌 현관","노트북 충전기 챙겼나?","신발 신다가 문득 떠올랐다.",[
+      {l:"되돌아가서 확인",t:3,f:{charger:true},r:"가방에 있었다 🙃"},
+      {l:"그냥 간다",f:{charger:false},r:"괜찮겠지… (괜찮지 않음)"}]);if(!o)return;
+    await fadeTo(1,400);ov.classList.remove("home");
+    await ask(stat(),Q[0],"이미 집입니다");if(!alive())return;
+    W.min+=8;
 
     // ===== STAGE 1: subway =====
-    setScene("subway");stageLabel("STAGE 1 · 9호선 급행","🚇","subway");
-    CAM.p=[0,1.6,1.4];CAM.l=[0,1.5,-6];sway=1;
-    await sleep(60);await fadeTo(0,600);if(!alive())return;
-    sub("이번 열차는 급행 열차입니다. 다음 정차역은 환승지옥역입니다");beep(988,.15,"sine",.05);setTimeout(()=>beep(784,.2,"sine",.05),180);
-    await sleep(2300);if(!alive())return;
-    sub("🚪 문이 열립니다. 사람들이 밀려 들어옵니다!!");shake();beep(90,.5,"sawtooth",.08,60);
-    if(cur)tween(1,k=>cur.push(ease(k)));
-    await sleep(700);if(!alive())return;
-    sub("");
-    const held=await mash(4);if(!alive())return;
-    apply(held?{m:-5}:{m:-15,t:1});sub(held?"버텼다… 손잡이 사수 성공 💪":"밀려서 문 앞까지 떠밀려 왔다… 😵");
-    await sleep(1600);if(!alive())return;
-    const v=pick(VILLAINS);if(cur)cur.villain(v);
+    setScene("subway");stageLabel("STAGE 1 · 9호선","🚇","subway");
+    CAM.p=[0,1.6,1.4];CAM.l=[0,1.5,-6];sway=1;hud();
+    await fadeTo(0,600);if(!alive())return;
+    sub("🏃 계단을 뛰어 내려갔는데…");await sleep(1200);if(!alive())return;
+    shake();beep(150,.4,"sawtooth",.06,90);sub("문이 눈앞에서 닫혔다. 안에 있는 사람과 눈이 마주쳤다");apply({t:4,m:-5});await sleep(1800);if(!alive())return;sub("");
+    const lo=await C("🚇 승강장","완행이 먼저 왔다","급행은 3분 뒤. 완행은 자리가 있다.",[
+      {l:"완행 탄다",h:"앉아서 간다",m:10,t:7,loc:1,r:"앉았다. 근데 정거장이 23개다"},
+      {l:"급행 기다린다",h:"지옥철 확정",r:"…각오는 했다"}]);if(!lo)return;
+    stageLabel(lo.loc?"STAGE 1 · 9호선 완행":"STAGE 1 · 9호선 급행","🚇","subway");
+    sub(lo.loc?"이번 열차는 완행 열차입니다. 모든 역에 정차합니다":"이번 열차는 급행 열차입니다. 다음 정차역은 환승지옥역입니다");
+    beep(988,.15,"sine",.05);setTimeout(()=>beep(784,.2,"sine",.05),180);await sleep(2000);if(!alive())return;
+    if(!lo.loc){
+      sub("🚪 문이 열립니다. 사람들이 밀려 들어옵니다!!");shake();beep(90,.5,"sawtooth",.08,60);
+      if(cur)tween(1,k=>cur.push(ease(k)));await sleep(700);if(!alive())return;sub("");
+      const held=await mash(4);if(!alive())return;
+      apply(held?{m:-5}:{m:-15});sub(held?"버텼다… 손잡이 사수 성공 💪":"얼굴이 창문에 붙었다… 😵");await sleep(1600);if(!alive())return;sub("");
+    }
+    const vs=VILLAINS.slice().sort(()=>Math.random()-.5);
+    const v1=vs[0];if(cur)cur.villain(v1);
     sub("…뭔가 심상치 않은 기운이 느껴진다");camTo([0,1.6,1.4],[.1,1.5,-2],.6);await sleep(1000);if(!alive())return;sub("");
-    const o1=await choice(v.tag,v.title,v.text,v.opts);if(!alive())return;
-    apply(o1);sub(o1.r);await sleep(1900);if(!alive())return;
-    sub("이번 역은 노비역, 노비역입니다. 노비 여러분은 모두 내리시기 바랍니다");W.min+=15;hud();
+    if(!await C(v1.tag,v1.title,v1.text,v1.opts))return;
+    if(!lo.loc){
+      if(!await C("💺 기회","앞사람이 가방을 챙긴다","드디어 내리나?",[
+        {l:"기다린다",m:-10,r:"가방에서 폰만 꺼내고 다시 앉았다"},
+        {l:"옆으로 비켜준다",m:-20,r:"내렸다. 그리고 옆 사람이 앉았다"}]))return;
+    }
+    sub("환승지옥역입니다. 환승 통로로 이동하세요");camTo([0,1.6,1.4],[0,1.5,-6],.6);await sleep(1500);if(!alive())return;sub("");
+    if(!await C("🚶 환승 계단","맨 앞사람이 멈춰서 카드를 찾는다","뒤로 수백 명이 밀려 있다.",[
+      {l:"기다린다",t:2,r:"카드는 가방 맨 밑에 있었다"},
+      {l:"옆으로 제친다",m:-5,r:"에스컬레이터 걷는 줄에 섰다. 뒤에서 한숨 소리."}]))return;
+    const v2=vs[1];if(cur)cur.villain(v2);sub("환승했다. 그런데 또…");await sleep(1000);if(!alive())return;sub("");
+    if(!await C(v2.tag,v2.title,v2.text,v2.opts))return;
+    W.min+=52;hud();
+    sub("이번 역은 노비역, 노비역입니다. 노비 여러분은 모두 내리시기 바랍니다");
+    await sleep(1800);if(!alive())return;sub("오늘 하루도 힘내세요. (힘내도 월급은 같습니다)");
     if(cur)tween(.8,k=>cur.doors(ease(k)));
     await camTo([0,1.6,-7.6],[0,1.5,-14],2.2);if(!alive())return;
     await fadeTo(1,450);sub("");
+    await ask(stat(),Q[1],"노비역에서는 돌아가는 열차가 없습니다");if(!alive())return;
 
-    await ask(clockStr(W.min)+" · 멘탈 "+Math.round(W.mental),"이래도 계속<br>출근하시겠습니까<span>?</span>");if(!alive())return;
-
-    // ===== STAGE 2: street & revolving door =====
+    // ===== STAGE 2: street =====
     setScene("street");stageLabel("STAGE 2 · 루팡타워 앞","🏢","street");
-    CAM.p=[0,1.6,6];CAM.l=[0,2.4,-8];sway=.4;W.min+=3;hud();
-    const ev=pick(STREET);if(cur)cur.prop(ev.kind);
+    CAM.p=[0,1.6,6];CAM.l=[0,2.4,-8];sway=.4;
     await fadeTo(0,500);if(!alive())return;
-    sub("출구로 나왔다. 회사가 보인다…");
-    await camTo([0,1.6,.6],[0,1.8,-6],2);if(!alive())return;sub("");
-    const o2=await choice(ev.tag,ev.title,ev.text,ev.opts);if(!alive())return;
-    apply(o2);sub(o2.r);if(cur)cur.prop("");await sleep(1700);if(!alive())return;
-    sub("회전문이다. 타이밍을 맞춰 들어가자");
+    if(!await C("🚧 출구 3번","에스컬레이터 점검 중","지하 4층이다. 표지판이 미안하다고 한다.",[
+      {l:"계단으로",m:-8,r:"허벅지가 떨린다"},
+      {l:"다른 출구로",t:2,r:"반대편 길로 나왔다"}]))return;
+    W.min+=4;hud();sub("출구로 나왔다. 회사가 보인다…");
+    await camTo([0,1.6,2.2],[0,1.8,-6],1.6);if(!alive())return;sub("");
+    if(!await C("☕ 편의점","커피 1+1","줄이 세 명.",[
+      {l:"산다",t:2,m:10,n:10,r:"남은 1잔은 팀장님 책상에 (눈치 +10)"},
+      {l:"안 산다",r:"…"}]))return;
+    if(!await C("👀 20m 앞","옆 팀 과장님 발견","같은 엘리베이터 탈 확률 100%.",[
+      {l:"걸음을 늦춘다",t:1,r:"성공. 대신 신호등에 걸렸다"},
+      {l:"따라잡고 인사",m:-12,n:5,r:"\"주말 잘 보냈어요?\"부터 스몰톡 3분"}]))return;
+    if(Math.random()<.5){const ev=pick(STREET);if(cur)cur.prop(ev.kind);if(!await C(ev.tag,ev.title,ev.text,ev.opts))return;if(cur)cur.prop("")}
+    sub("회전문이다. 앞사람이 엄청 천천히 민다…");if(cur)cur.setSpeed(.7);
     await camTo([0,1.6,-4.4],[0,1.6,-9],1.6);if(!alive())return;sub("");
     let tries=0;
     while(true){
       const ok=await timing(tries?"다시! 초록 구간에서 탭":"회전문 타이밍! 초록 구간에서 탭");if(!alive())return;
-      if(ok){beep(1046,.1,"square",.05);sub("나이스 타이밍 ✨");break}
+      if(ok){beep(1046,.1,"square",.05);sub("나이스 타이밍");break}
       tries++;shake();apply({m:-8,t:tries>1?1:0});sub(pick(["쿵!! 회전문에 이마를 박았다 😵","유리문에 얼굴 도장 찍음 🫠","한 바퀴 더 돌아서 밖으로 나왔다 🔄"]));
       await camTo([0,1.6,-3.9],[0,1.6,-9],.25);await camTo([0,1.6,-4.4],[0,1.6,-9],.4);await sleep(700);if(!alive())return;
       if(tries>=3){sub("경비 아저씨가 회전문을 멈춰줬다 🙏");break}
     }
     if(cur)cur.setSpeed(2.2);
     await camTo([0,1.6,-9.5],[0,1.6,-16],2);if(!alive())return;
-    await fadeTo(1,400);sub("");
+    sub("…통과하고 보니 바로 옆에 자동문이 있었다");apply({m:-3});await sleep(1500);if(!alive())return;
+    W.min+=3;await fadeTo(1,400);sub("");
+    await ask(stat(),Q[2],"회전문은 한 방향으로만 도는 중입니다");if(!alive())return;
 
-    // ===== STAGE 3: lobby speed gate & elevator =====
+    // ===== STAGE 3: lobby & elevator =====
     setScene("lobby");stageLabel("STAGE 3 · 로비 스피드게이트","🪪","lobby");W.min+=2;hud();
     CAM.p=[0,1.62,9];CAM.l=[0,1.3,-6];sway=.4;
     await fadeTo(0,450);if(!alive())return;
-    sub("🚶 게이트로 가는 중… "+clockStr(W.min));
-    await camTo([0,1.62,2.1],[.35,1.05,-1.5],2.2);if(!alive())return;sway=0;
+    sub("🚶 게이트 앞… 사원증 꺼내야지");
+    await camTo([0,1.62,2.1],[.35,1.05,-1.5],2.2);if(!alive())return;sway=0;sub("");
+    let spots=["바지 주머니","가방 앞주머니","지갑","폰케이스 뒤"];
+    while(spots.length>1){
+      const c=await choice("🪪 사원증 어디 갔지","뒤에 줄이 생기기 시작했다","어디부터 뒤질까? (남은 곳 "+spots.length+")",spots.map(s=>({l:s})));if(!alive())return;
+      spots=spots.filter(s=>s!==c.l);
+      if(spots.length>0){apply({m:-2});sub(c.l+"… 없다");await sleep(800);if(!alive())return;sub("")}
+    }
+    sub("마지막 남은 "+spots[0]+"에 있었다. 항상 그렇다.");await sleep(1500);if(!alive())return;
     sub("🪪 사원증을 리더기에 찍어주세요");
     const swipe=async()=>{if(!cur)return;cur.card.visible=true;const a=new THREE.Vector3(.15,1.25,1.6),b=new THREE.Vector3(.8,1.16,.42);
       await tween(.45,k=>{cur.card.position.lerpVectors(a,b,ease(k));cur.card.rotation.set(-Math.PI/2*k-(1-k)*.4,0,(1-k)*.5)})};
-    await cardTap();if(!alive())return;await swipe();if(!alive())return;
-    if(Math.random()<.45){
-      beep(220,.12,"square",.06);setTimeout(()=>beep(220,.2,"square",.06),160);shake();
-      sub("삑-! 인식 실패 ❌ 카드를 다시 대주세요");apply({m:-5,t:1});
-      if(cur){cur.card.visible=false}await sleep(900);if(!alive())return;
-      await cardTap();if(!alive())return;await swipe();if(!alive())return;
-    }
+    const fail=async()=>{beep(220,.12,"square",.06);setTimeout(()=>beep(220,.2,"square",.06),160);shake();sub("삑-! 카드를 다시 대주세요 ❌");if(cur)cur.card.visible=false;await sleep(900)};
+    await cardTap();if(!alive())return;await swipe();if(!alive())return;await fail();if(!alive())return;
+    await cardTap();if(!alive())return;await swipe();if(!alive())return;await fail();if(!alive())return;
+    sub("뒤에서 누군가 사원증을 지갑째 대고 한 번에 통과했다");apply({m:-8});await sleep(1500);if(!alive())return;sub("");
+    const tg=await choice("🚧 게이트","앞사람 통과 직후, 유리문이 닫히기 직전","뛰어들까?",[
+      {l:"뛰어든다",h:"꼬리물기",m:-10,r:"허벅지 끼임 + 경비 아저씨 호루라기 🚨"},
+      {l:"정상 인증",t:1,r:"세 번째에 됐다"}]);if(!alive())return;
+    if(!tg.m){await cardTap();if(!alive())return;await swipe();if(!alive())return}
+    apply(tg);sub(tg.r);
     if(cur){cur.led.material.color.set(0x21e07a);cur.ring.visible=false}
-    beep(1568,.09,"square",.06);setTimeout(()=>beep(2093,.12,"square",.06),90);sub("✅ 삑! 통과");
+    beep(1568,.09,"square",.06);setTimeout(()=>beep(2093,.12,"square",.06),90);
     if(cur){await tween(.45,k=>{cur.flaps(ease(k));cur.card.position.y=1.16+k*.3});cur.card.visible=false}else await sleep(450);
-    if(!alive())return;
-    sway=.4;sub("🛗 엘리베이터 앞으로…");
-    await camTo([0,1.62,-9.6],[0,1.5,-14],2.4);if(!alive())return;sway=0;
-    beep(1318,.25,"sine",.06);setTimeout(()=>beep(1046,.35,"sine",.06),260);sub("띵동~ 🛎");
+    if(!alive())return;await sleep(900);
+    sway=.4;sub("🛗 엘리베이터 문이 닫히고 있다!! 뛰자!!");
+    await camTo([0,1.62,-9.6],[0,1.5,-14],1.8);if(!alive())return;sway=0;
+    sub("안에 있는 사람이 닫힘 버튼을 눌렀다. 눈이 마주친 상태로.");apply({t:2,m:-5});await sleep(1800);if(!alive())return;
+    beep(1318,.25,"sine",.06);setTimeout(()=>beep(1046,.35,"sine",.06),260);sub("…다음 엘리베이터. 띵동~");
     if(cur){cur.boss.visible=true;await tween(.9,k=>cur.doors(ease(k)))}else await sleep(900);
     if(!alive())return;
-    sub("…엘리베이터 안에 팀장님이 계신다.");await sleep(1100);if(!alive())return;sub("");
-    const o3=await choice("😐 최종 보스","엘리베이터에 팀장님이…","문이 열렸다. 팀장님과 눈이 마주쳤다. 문이 닫히기까지 3초.",[
-      {l:"같이 탄다",h:"정면 승부",m:-18,r:"어색한 침묵 37초… \"요즘 바쁘죠?\" \"아 네…\""},
-      {l:"폰 보는 척 탄다",h:"투명인간 모드",m:-10,r:"팀장님: \"오늘 일찍 왔네요?\" (전혀 아님)"},
-      {l:"계단으로 간다",h:"17층까지",m:-6,t:3,r:"허벅지가 불탄다… 🔥"}]);
+    sub("…안에 팀장님이 계신다.");await sleep(1100);if(!alive())return;sub("");
+    const o3=await choice("😐 최종 보스","엘리베이터에 팀장님이…","문이 열렸다. 눈이 마주쳤다. 문이 닫히기까지 3초.",[
+      {l:"같이 탄다",h:"정면 승부",m:-18,r:"\"요즘 바쁘죠?\" \"아 네…\" 어색한 침묵 37초"},
+      {l:"폰 보는 척 탄다",h:"투명인간 모드",m:-10,r:"\"오늘 일찍 왔네요?\" (전혀 아님)"},
+      {l:"계단으로 간다",h:"17층까지",m:-6,t:4,r:"허벅지가 불탄다 🔥"}]);
     if(!alive())return;
     apply(o3);sub(o3.r);await sleep(2000);if(!alive())return;
+    if(!o3.t){sub("어린이 방문객이 2층부터 17층까지 전부 눌렀다. 팀장님과 함께 17개 층을…");apply({t:3,m:-5});await sleep(2000);if(!alive())return}
     W.min+=2;hud();
     if(o3.t){await camTo([-4,1.62,-9],[-8,1.6,-9],1.2)}else{await camTo([0,1.62,-12.6],[0,1.5,-16],1.3)}
     if(!alive())return;
-    await fadeTo(1,400);sub("");
+    await fadeTo(1,400);
     const late=W.min>=540;
-    await ask((late?"⏰ 지각 · ":"✅ ")+clockStr(W.min)+" 도착 · 멘탈 "+Math.round(W.mental),"마지막으로 묻겠습니다.<br>정말 출근하시겠습니까<span>?</span>");
+    sub("자리 도착 "+clockStr(W.min)+". 컴퓨터를 켜자 'Windows 업데이트 구성 중 0%. 컴퓨터를 끄지 마세요'");
+    await sleep(2400);if(!alive())return;sub("");
+    await ask((late?"⏰ 지각 · ":"✅ ")+stat()+" · 로그인 기록 "+clockStr(W.min+7),"마지막으로 묻겠습니다.<br>정말 출근하시겠습니까<span>?</span>","엘리베이터는 올라가는 중입니다");
     if(!alive())return;
-    finish({ok:true,late,mental:Math.round(W.mental),arrive:clockStr(W.min)});
+    finish({ok:true,late,mental:Math.round(W.mental),nunchi:Math.round(W.nunchi),arrive:clockStr(W.min),f:W.f});
   }
 
   function finish(r){
@@ -949,7 +1054,7 @@ body.pre{background:#030504}
   const LABELS=["매출","매출원가","매출총이익","인건비","광고비","물류비","임차료","기타비용","영업이익","비고"];
   const MONTHS=["1월","2월","3월","4월","5월","6월","7월"];
   const LETTERS="ABCDEFGHI";
-  const DAY_START=540, DAY_END=1080, DAY_SECONDS=100, LUNCH_S=720, LUNCH_E=780;
+  const DAY_START=540, DAY_END=1080, DAY_SECONDS=150, LUNCH_S=720, LUNCH_E=780;
   const ERRS=["#REF!","#DIV/0!","#N/A","#VALUE!"];
   const $=id=>document.getElementById(id);
   const grid=$("grid"), wrap=grid.parentElement;
@@ -1007,6 +1112,7 @@ body.pre{background:#030504}
     S={pos:{c:3,r:4},coins:new Map(),errs:new Map(),score:0,strikes:0,min:DAY_START,running:false,boss:false,
        phase:"idle",phaseT:4,progress:3,spawnT:.4,errT:9,chatT:5,ended:false,
        scan:null,combo:0,comboT:0,lunch:false,lunchDone:false,inv:0,mtg:false,mtgRem:0,
+       mental:100,nunchi:50,f:{umbrella:true,charger:true,unread:false},evIdx:0,paused:false,lockT:0,errBoost:0,lunchEnd:770,mtgEnd:0,maintEnd:0,endKind:null,
        app:"excel",mails:[],sel:null,readT:0,compose:false,composeT:0,mailT:1.5,mailId:0,olDone:0,olDirty:true,
        rush:0,rushCd:0,magnet:0,magT:0,shown:0,rankIdx:0,spinning:false};
   }
@@ -1051,6 +1157,7 @@ body.pre{background:#030504}
     $("sum").textContent=Math.round(S.shown).toLocaleString("ko-KR");$("sum").classList.toggle("bump",S.score-S.shown>500);
     $("strikes").textContent="●".repeat(S.strikes)+"○".repeat(3-S.strikes);
     $("clock").textContent=fmtTime(S.min);$("olClock").textContent=$("tbClock").textContent=fmtTime(S.min);
+    $("mentalV").textContent=$("olMental").textContent=Math.round(S.mental);
     $("olSum").textContent=Math.round(S.shown).toLocaleString("ko-KR");$("olStrikes").textContent="●".repeat(S.strikes)+"○".repeat(3-S.strikes);
     $("olwin").classList.toggle("alert",$("win").classList.contains("alert"));$("olwin").classList.toggle("rush",$("win").classList.contains("rush"));
     olRender();
@@ -1104,7 +1211,8 @@ body.pre{background:#030504}
   function shake(){const w=$("win");w.classList.remove("shake");void w.offsetWidth;w.classList.add("shake")}
 
   function move(dx,dy){
-    if(!S.running||S.boss) return;
+    if(!S.running||S.boss||S.paused) return;
+    if(S.lockT>0){floatAt(S.pos.c,S.pos.r,"🔒 읽기 전용","bad");return}
     const c=Math.max(0,Math.min(COLS-1,S.pos.c+dx)), r=Math.max(0,Math.min(ROWS-1,S.pos.r+dy));
     if(c===S.pos.c&&r===S.pos.r) return;
     S.pos={c,r};SFX.step();
@@ -1139,7 +1247,7 @@ body.pre{background:#030504}
     const late=(S.min-DAY_START)/(DAY_END-DAY_START);
     S.phaseT=Math.max(1.8,(5-late*2.5)+Math.random()*2.5);
     $("win").classList.remove("alert");
-    if(praise){S.score+=20000;S.progress+=5;SFX.praise();toast("팀장님","오~ 열심히 하네요 👍  (+₩20,000)","",1600);}
+    if(praise){S.score+=20000;S.progress+=5;S.mental=Math.min(100,S.mental+3);SFX.praise();toast("팀장님","오~ 열심히 하네요 👍  (+₩20,000)","",1600);}
     setMsg(S.boss?"업무 모드: 열심히 일하는 중":"팀장님 자리 비움 · 루팡 가능");
   }
 
@@ -1169,7 +1277,7 @@ body.pre{background:#030504}
   }
   function spawnErr(){
     const late=(S.min-DAY_START)/(DAY_END-DAY_START);
-    if(S.errs.size>=2+Math.floor(late*4)) return;
+    if(S.errs.size>=2+Math.floor(late*4)+(S.errBoost>0?6:0)) return;
     // sometimes spread from an existing error
     let p=null;
     if(S.errs.size&&Math.random()<.5){
@@ -1221,7 +1329,7 @@ body.pre{background:#030504}
       setFormula("=카페인(샷추가)  ' 주변 월급 자동 흡수");return true;
     }
     if(S.rush<=0){S.combo=S.comboT>0?Math.min(S.combo+1,5):1;S.comboT=1.6;}
-    const v=(k.type==="gold"?30000:10000)*(S.rush>0?1:S.combo);S.score+=v;
+    const v=(k.type==="gold"?30000:10000)*(S.rush>0?1:S.combo);S.score+=v;S.mental=Math.min(100,S.mental+(k.type==="gold"?3:1));
     floatAt(c,r,"+"+won(v)+(S.combo>1?" x"+S.combo:""),S.combo>1?"combo":"");
     burst(c,r,k.type==="gold"?30:8+S.combo*3,GOLDS,k.type==="gold"?1.3:.8);
     k.type==="gold"?SFX.gold():SFX.coin(S.combo);
@@ -1361,7 +1469,7 @@ body.pre{background:#030504}
       const before=Math.floor(S.readT);S.readT+=dt;
       if(Math.floor(S.readT)!==before&&S.readT<READ_SEC){S.score+=4000;olFloat("+₩4,000 루팡 중");SFX.coin(Math.floor(S.readT))}
       if(S.readT>=READ_SEC){
-        S.mails=S.mails.filter(x=>x!==m);S.sel=null;S.score+=20000;
+        S.mails=S.mails.filter(x=>x!==m);S.sel=null;S.score+=20000;S.mental=Math.min(100,S.mental+5);
         olFloat("📖 정독 완료 +₩20,000","");SFX.gold();rain(40);S.olDirty=true;
       }
     }
@@ -1406,6 +1514,152 @@ body.pre{background:#030504}
     if(m&&m.fun){const b=$("olRbar");if(b)b.style.width=Math.min(100,S.readT/READ_SEC*100)+"%"}
   }
 
+  // ---------- scenario v2: timed office events ----------
+  const TM=(h,m)=>h*60+m;
+  function evShow(tag,title,text,opts){
+    return new Promise(res=>{
+      S.paused=true;$("evDim").hidden=false;
+      const c=$("evCard");$("evTag").textContent=tag;$("evTitle").textContent=title;$("evText").textContent=text;
+      const box=$("evChoices");box.innerHTML="";
+      opts.forEach(o=>{const b=document.createElement("button");b.appendChild(document.createTextNode(o.l));
+        if(o.h){const sm=document.createElement("small");sm.textContent=o.h;b.appendChild(sm)}
+        b.onclick=()=>{c.hidden=true;$("evDim").hidden=true;S.paused=false;beep(660,.06,"square",.04);evApply(o);res(o)};box.appendChild(b)});
+      c.hidden=false;c.classList.remove("in");void c.offsetWidth;c.classList.add("in");
+      beep(330,.12,"triangle",.06);setTimeout(()=>beep(247,.18,"triangle",.06),120);
+    });
+  }
+  function evApply(o){
+    if(o.m) S.mental=Math.max(0,Math.min(100,S.mental+o.m));
+    if(o.n) S.nunchi=Math.max(0,Math.min(100,S.nunchi+o.n));
+    if(o.w) S.score=Math.max(0,S.score+o.w);
+    if(o.t) S.min+=o.t;
+    if(o.fx) o.fx();
+    const parts=[];if(o.m)parts.push("멘탈 "+(o.m>0?"+":"")+o.m);if(o.n)parts.push("눈치 "+(o.n>0?"+":"")+o.n);
+    if(o.w)parts.push((o.w>0?"+":"-")+won(Math.abs(o.w)));if(o.t)parts.push("+"+o.t+"분");
+    const line=(o.r?o.r:"")+(parts.length?(o.r?"  ·  ":"")+parts.join(" · "):"");
+    if(line) notify({who:"루팡봇",title:"루팡봇",body:line,ms:3000});
+    if((o.m||0)<0||(o.w||0)<0) SFX.bad();
+  }
+  function evMash(need,sec){
+    return new Promise(res=>{
+      S.paused=true;$("evDim").hidden=false;let n=0,t=sec,ended=false;
+      const c=$("evCard");$("evTag").textContent="😪 식곤증";$("evTitle").textContent="눈꺼풀이 무거워진다…";
+      $("evText").textContent=need+"번 연타해서 눈 뜨기! 남은 시간 "+sec.toFixed(1)+"초";
+      const box=$("evChoices");box.innerHTML="";const b=document.createElement("button");b.className="cm-big";b.style.textAlign="center";b.textContent="눈 뜨기!! (0/"+need+")";box.appendChild(b);
+      const fin=ok=>{if(ended)return;ended=true;clearInterval(iv);c.hidden=true;$("evDim").hidden=true;S.paused=false;document.body.classList.remove("sleepy");res(ok)};
+      b.onpointerdown=e=>{e.preventDefault();n++;b.textContent="눈 뜨기!! ("+n+"/"+need+")";beep(300+n*40,.03,"square",.03);if(n>=need)fin(true)};
+      const iv=setInterval(()=>{t-=.1;$("evText").textContent=need+"번 연타해서 눈 뜨기! 남은 시간 "+Math.max(0,t).toFixed(1)+"초";if(t<=0)fin(false)},100);
+      c.hidden=false;c.classList.remove("in");void c.offsetWidth;c.classList.add("in");
+    });
+  }
+  function olPush(from,subj,body,fun,ico){
+    S.mails.unshift({id:++S.mailId,fun:!!fun,ico:ico||(fun?"🛍":"📎"),from,subj,body,time:fmtTime(S.min),unread:true});
+    if(S.mails.length>16) S.mails.length=16;S.olDirty=true;
+  }
+  const OL=(title,subject,body,ms,replies)=>notify({app:"outlook",who:title,title,subject,body,ms:ms||3500,replies});
+  const TEAMS=(who,body,ms,replies)=>notify({who,title:who,body,ms:ms||3200,replies});
+  const xlName=()=>document.querySelector("#win .fname");
+
+  const EVENTS=[
+    [TM(9,10),async()=>{await evShow("Microsoft Excel","읽기 전용으로 열까요?","이 파일은 재무팀 박과장님이 편집 중입니다.",[
+      {l:"읽기 전용으로 열기",r:"20초간 셀 이동 불가 🔒"},{l:"편집 가능해지면 알림 받기",r:"박과장님은 점심때까지 파일을 안 닫았다 🔒"}]);
+      S.lockT=20;xlName().textContent="2026_매출실적_최종_v3_진짜최종.xlsx [읽기 전용]";setFormula("' 재무팀 박과장님이 편집 중입니다");}],
+    [TM(9,20),()=>{OL("인사팀","[전사공지] 11월 조직 개편 안내","전 직원 대상 메일입니다",3000);
+      ["RE: 감사합니다","RE: RE: 감사합니다","RE: 전체 회신 하지 마세요","RE: 감사합니다 ^^","RE: RE: 전체 회신 하지 마세요!!","RE: 저도 빼주세요","RE: 저 이 메일 왜 받나요","RE: (회수) 감사합니다"].forEach((sj,i)=>setTimeout(()=>{if(S.running){olPush(["영업1팀","물류팀","총무팀","재무팀","인사팀","마케팅팀","IT 헬프데스크","영업2팀"][i],sj,"전체 회신 대참사 진행 중",false);beep(784,.04,"sine",.03)}},300*i));
+      setTimeout(()=>{if(S.running)TEAMS("동기 민지","전체회신 대참사 ㅋㅋㅋㅋ 아웃룩 봐봐",2600)},2800);}],
+    [TM(9,30),()=>{notify({id:"typing",who:"팀장님",title:"팀장님",body:"입력 중…",ms:4200})}],
+    [TM(9,36),()=>{TEAMS("팀장님","ㅇㅇ",2400);evApply({m:-10,r:"2분 입력하고 'ㅇㅇ'"})}],
+    [TM(9,45),()=>{xlName().textContent="매출실적_최종_v3_진짜최종_팀장님수정_최최종(1).xlsx";setFormula("' 파일명이 또 바뀌었다");}],
+    [TM(10,5),()=>{OL("Outlook","참조(CC)에 팀장님이 추가되었습니다","누가 추가했는지는 표시되지 않습니다");evApply({n:-10})}],
+    [TM(10,15),()=>{TEAMS("팀장님","혹시 시간 되세요?",9000,[
+      ["네!",()=>{S.min+=10;for(let i=0;i<2;i++)olPush("팀장님","[요청] 방금 통화한 건 정리 부탁해요","오늘 중으로요",false);S.mental=Math.max(0,S.mental-5);return "10분 통화 → 일 2개 추가 · 멘탈 -5"}],
+      ["잠시만요",()=>{[4000,8000,12000].forEach(d=>setTimeout(()=>{if(S.running)TEAMS("팀장님","혹시 시간 되세요?",2500)},d));return "재알림 3번 예약됨"}]])}],
+    [TM(10,30),async()=>{$("win").classList.add("hang");
+      await evShow("Microsoft Excel","Excel이 응답하지 않습니다","프로그램이 다시 응답할 때까지 기다리시겠습니까?",[
+        {l:"응답 대기",t:3,r:"3분 뒤 살아났다"},
+        {l:"프로그램 다시 시작",r:"자동 저장이 꺼져 있었다. ₩ 셀 전부 초기화",fx:()=>{S.coins.clear();S.combo=0}}]);
+      $("win").classList.remove("hang");}],
+    [TM(10,50),()=>{olPush("재무팀 박과장","RE: 첨부파일이 없습니다","첨부를 안 하셨어요 ^^",false);OL("재무팀 박과장","RE: 첨부파일이 없습니다","첨부를 안 하셨어요 ^^ (제목: RE: RE: [재발송] 첨부 누락하여 다시 보냅니다)")}],
+    [TM(11,0),()=>{TEAMS("팀 단톡","팀장님: 아 아침 메시지요? 그거 별거 아니에요 ㄴㄴ",3600);
+      evApply({r:S.f.unread?"'읽지 않음 47' → 48":"아침에 깎인 멘탈 15, 회수 0"})}],
+    [TM(11,20),()=>{S.errBoost=20;setFormula("=#REF!  ' 수식 하나가 시트 전체로 번지는 중");TEAMS("재무팀 박과장","시트 수식 제가 좀 고쳤어요~",2600)}],
+    [TM(11,40),()=>{OL("팀장님","급한 건 아니고요","오늘 중으로만 부탁드려요 (3건)");for(let i=0;i<3;i++)olPush("팀장님",["급한 건 아니고요 (1)","급한 건 아니고요 (2)","급한 건 아니고요 (3)"][i],"오늘 중으로만 부탁드려요",false)}],
+    [TM(11,58),async()=>{
+      const REJ={"김치찌개":"찌개는 어제 먹었고","마라탕":"마라탕은 냄새가 좀","샐러드":"샐러드는 배가 안 차요","판모밀":"판모밀은 줄이 길잖아"};
+      let left=Object.keys(REJ),q="\"아무거나 괜찮아요\"",ttl="팀장님: 점심 뭐 먹을까요?";
+      while(left.length){const o=await evShow("💬 팀 단톡 · 11:58",ttl,q,left.map(l=>({l})));left=left.filter(x=>x!==o.l);ttl="팀장님: "+REJ[o.l];q=left.length?"\"다른 거 없어요?\"":"";}
+      await evShow("💬 팀 단톡","팀장님: 그냥 늘 가던 데 가죠","구내식당 제육볶음. 이번 주 3번째.",[{l:"…네",m:-5}]);
+      await evShow("🍚 구내식당","팀장님이 조용히 숟가락을 내려놓는다","\"근데 그거요…\" 점심시간에 업무 얘기 5분.",[{l:"네…",m:-10}]);
+      const L=(a=>a[Math.floor(Math.random()*a.length)])([
+        ["💳 계산","팀장님: \"오늘은 각자 하죠~\"","",{l:"…네",w:-9500}],
+        ["🪜 사다리","동기가 연차 사다리 타기를 하자고 한다","결과: 아무도 연차를 못 씀",{l:"ㅋㅋ",m:5,r:"나만 그런 게 아니구나"}],
+        ["📺 식당 TV","뉴스: \"직장인 평균 연봉…\"","팀 전체가 조용히 밥만 먹는다",{l:"…",m:-15}],
+        ["📱 폴더블 폼","남은 점심시간에 설문 링크가 왔다","\"점심시간 활용 만족도 조사\" (필수)",{l:"참여한다",r:"점심 피버 20분 증발",fx:()=>{S.lunchEnd=760}}]]);
+      await evShow(L[0],L[1],L[2],[L[3]]);}],
+    [TM(13,20),async()=>{document.body.classList.add("sleepy");await new Promise(r=>setTimeout(r,900));
+      const ok=await evMash(10,4);
+      if(!ok){const r=Math.floor(Math.random()*ROWS);for(let c=0;c<COLS;c++)base[r][c]="ㅇㅇㅇㅇ";evApply({m:-10,r:"졸다가 키보드에 이마 박음. 셀에 'ㅇㅇㅇㅇㅇㅇㅇ' 입력됨"})}
+      else evApply({m:-3,r:"버텼다. 눈이 뻑뻑하다"});}],
+    [TM(13,40),()=>evShow("❄️ 에어컨 바로 밑","자리 온도 18도","히터파와 에어컨파의 전쟁 중이다.",[
+      {l:"담요 덮는다",m:3},{l:"온도 올린다",m:-5,r:"10분 뒤 누군가 다시 18도로 내렸다"}])],
+    [TM(14,0),async()=>{
+      await evShow("📅 팀장님","\"5분만 회의해요\"","회의실 B. 노트북 챙겨서.",[{l:"네…"}]);
+      await evShow("🗣 회의실 B · 14:23","\"다들 의견 편하게 말해봐요\"","정적이 흐른다…",[
+        {l:"의견을 말한다",r:"\"좋네요, 그럼 그거 맡아주세요\"",fx:()=>{for(let i=0;i<3;i++)olPush("팀장님","[회의 후속] 담당 업무 "+(i+1),"오늘 회의에서 말씀하신 건요",false);S.progress+=5}},
+        {l:"가만히 있는다",m:-10,r:"\"우리 팀은 왜 의견이 없을까요\""}]);
+      if(!S.f.charger) await evShow("🔋 배터리 3%","화면 공유 중인데 배터리가…","충전기는 집에 있다.",[
+        {l:"옆자리에 빌린다",m:-5,r:"\"저도 이거 빌린 거예요\""},
+        {l:"버틴다",m:-15,r:"화면 공유 중 노트북이 꺼졌다. 깜깜.",fx:()=>{S.coins.clear()}}]);
+      S.min=Math.max(S.min,TM(14,52));notify({who:"루팡봇",title:"루팡봇",body:"14:52 회의 종료. 5분이라더니 52분.",ms:3000});}],
+    [TM(15,12),()=>{if(S.mtg&&Math.random()<.3){S.mtgEnd=S.min;TEAMS("동기 민지","헐 임원회의 취소됐대 팀장님 온다!!!",3000)}}],
+    [TM(15,30),()=>evShow("☕ 탕비실","커피 원두가 비어 있다","누군가 마지막 한 잔을 내리고 안 채웠다.",[
+      {l:"채운다",t:3,r:"다 채우자 뒤에 5명이 줄 섬"},{l:"그냥 간다",n:-5,r:"이제 내가 탕비실 빌런이다"}])],
+    [TM(16,0),()=>{S.maintEnd=TM(16,30);OL("IT 헬프데스크","[공지] 시스템 점검 안내","16:00~16:30 그룹웨어 접속 불가. 30분 합법 루팡 타임!",3500)}],
+    [TM(16,5),()=>{S.maintEnd=0;OL("IT 헬프데스크","[공지] 점검이 조기 종료되었습니다","예정보다 25분 일찍 끝났습니다 ^^",3000);evApply({m:-8})}],
+    [TM(16,30),async()=>{
+      let pool=["Password1!","Password2!","Password3!","Password4!"];
+      while(pool.length>1){const o=await evShow("🔐 VPN 연결 끊김","비밀번호를 변경하세요","90일이 지났습니다. 새 비밀번호를 선택하세요.",pool.map(l=>({l})));
+        pool=pool.filter(x=>x!==o.l);if(pool.length>=1)notify({who:"IT 헬프데스크",title:"IT 헬프데스크",body:"이전 3개 비밀번호는 사용할 수 없습니다",ms:2200});S.mental=Math.max(0,S.mental-3)}
+      evApply({r:pool[0]+" 통과. 다음 분기엔 Password5!"});}],
+    [TM(17,0),()=>{OL("구매팀","[결재 반려] 사무용품 구매 품의서","사유: 양식 변경됨 (어제 변경, 공지 없었음)");S.progress=Math.max(0,S.progress-10)}],
+    [TM(17,15),()=>evShow("🌴 연차 신청","다음 주 금요일 연차","결과: 반려 · 사유 \"바쁜 시기\"",[
+      {l:"재신청",m:-5,r:"반려 · 사유 \"다음 달도 바쁜 시기\""},{l:"포기",m:-10}])],
+    [TM(17,30),()=>{notify({who:"루팡봇",title:"루팡봇",body:"퇴근 30분 전. 이상하게 시계가 느리게 간다…",ms:3200});setFormula("=퇴근시간()-NOW()  ' 줄어들지 않음")}],
+    [TM(17,45),()=>{if(S.nunchi>=70)notify({who:"루팡봇",title:"루팡봇",body:"불길한 예감이 든다… 팀장님 모니터에 엑셀 창이 하나 더 열렸다",ms:3600})}],
+    [TM(17,52),()=>{if(new Date().getDay()===5){olPush("팀장님","[요청] 금일 건 검토 부탁드립니다 (월요일 오전까지)","주말 잘 보내세요~",false);OL("팀장님","[요청] 금일 건 검토 부탁드립니다","월요일 오전까지요. 주말 잘 보내세요~",4000)}}],
+    [TM(17,58),async()=>{
+      const o=await evShow("😐 17:58 · 최종 보스","\"아 OO님, 잠깐 얘기 좀 할까요?\"","팀장님이 다가온다. 가방은 반쯤 쌌다.",[
+        {l:"네!",k:"ot"},{l:"저 오늘 약속이 있어서…",k:"ok",r:"\"아 그럼 내일 해요~\" (내일 아침 단톡 예약됨)"},
+        {l:"못 들은 척 이어폰 끼기",k:"deaf"},{l:"화장실 간다고 하고 도주",k:"run",r:"도주 성공. 가방은 두고 옴"}]);
+      if(o.k==="deaf"){
+        if(S.nunchi>=60) evApply({r:"눈치 "+Math.round(S.nunchi)+" · 성공. 이어폰 만세"});
+        else{await evShow("😐 팀장님","어깨를 톡톡","\"OO님? 잠깐만요~\"",[{l:"…네"}]);o.k="ot"}
+      }
+      if(o.k==="ot"){S.endKind="ot";notify({who:"팀장님",title:"팀장님",body:"\"아침에 말한 그 얘기인데요…\"",ms:2500});setTimeout(()=>{if(S.running)end(true)},1500)}
+    }]
+  ];
+  function evTick(){
+    while(!S.paused&&S.running&&S.evIdx<EVENTS.length&&S.min>=EVENTS[S.evIdx][0]){
+      const fn=EVENTS[S.evIdx][1];S.evIdx++;
+      try{const p=fn();if(p&&p.then)break}catch(e){}
+    }
+  }
+  const ENDINGS={
+    boss:["팀장님 면담","\"내일 아침 9시, 소회의실 2\" Outlook 일정 초대가 도착했습니다."],
+    soul:["영혼 퇴근","몸은 18시까지 자리에 있었습니다. 영혼은 먼저 퇴근했습니다."],
+    ot:["야근","18:24 퇴근. 야근수당은 포괄임금제에 포함되어 있습니다."],
+    legend:["전설의 루팡","업무 진행률 한 자릿수로 완벽한 하루를 보냈습니다."],
+    good:["업무 우수","우수한 성과를 인정받아 내일부터 업무가 2배로 늘어납니다."],
+    kal:["칼퇴","18:00:00 퇴근. 뒤에서 누군가 '오늘 일찍 가네?'라고 했습니다."]
+  };
+  function endingKind(){
+    if(S.strikes>=3) return "boss";
+    if(S.endKind) return S.endKind;
+    if(S.score>=2500000&&S.strikes===0) return "legend";
+    if(S.progress>=80) return "good";
+    return "kal";
+  }
+
   const bonus=(v,msg)=>()=>{S.score+=v;floatAt(S.pos.c,S.pos.r,"+"+won(v),"combo");burst(S.pos.c,S.pos.r,16,GOLDS,.8);SFX.coin(2);return msg||("+"+won(v))};
   const CHATS=[
     {w:"동기 민지",m:"커피 ㄱ? 1층 ㄱㄱ ☕",r:[["ㄱㄱ",()=>{S.magnet=6;S.magT=0;floatAt(S.pos.c,S.pos.r,"☕ 자석 6초","combo");SFX.gold();return "☕ 자석 6초"}],["바빠ㅠ",null]]},
@@ -1432,7 +1686,7 @@ body.pre{background:#030504}
     const size=type==="row"?(late>.6?3:2):(late>.6?2:1);
     const dir=Math.random()<.5?1:-1;
     S.scan={type,size,dir,start:dir>0?0:max-size,max,stepT:0,speed:Math.max(.32,.55-late*.2)};
-    S.phase="warn";S.phaseT=1.3-late*.4;
+    S.phase="warn";S.phaseT=(1.3-late*.4)*(.6+S.nunchi/125);
     SFX.warn();
     toast("팀장님",S.app==="outlook"?"내 자리 쪽으로 걸어오는 중… 저벅저벅 (딴짓 메일 닫아!)":type==="row"?"행 단위로 훑어보실 예정… 저벅저벅":"열 단위로 훑어보실 예정… 저벅저벅","warn");
     setMsg("팀장님 기척 감지 · 노란 줄 주의",true);
@@ -1440,15 +1694,20 @@ body.pre{background:#030504}
 
   function tick(dt){
     if(!S.running) return;
-    S.min+=dt*(DAY_END-DAY_START)/DAY_SECONDS;
+    if(S.paused){render();return}
+    S.min+=dt*(DAY_END-DAY_START)/DAY_SECONDS*(S.min>=1050?.5:1);
+    if(S.lockT>0){S.lockT-=dt;if(S.lockT<=0){S.lockT=0;document.querySelector("#win .fname").textContent=document.querySelector("#win .fname").textContent.replace(" [읽기 전용]","");setFormula("' 편집 가능해졌습니다")}}
+    if(S.errBoost>0) S.errBoost-=dt;
+    evTick();
+    if(S.mental<=0&&!S.endKind){S.endKind="soul";end(true);return}
     if(S.inv>0) S.inv=Math.max(0,S.inv-dt);
     if(S.comboT>0){S.comboT-=dt;if(S.comboT<=0)S.combo=0}
     if(S.boss) S.progress+=dt*1.5;
 
     // lunch fever
-    const nowLunch=S.min>=LUNCH_S&&S.min<LUNCH_E;
+    const nowLunch=S.min>=LUNCH_S&&S.min<S.lunchEnd;
     if(nowLunch&&!S.lunch){
-      S.lunch=true;if(S.scan) endScan();
+      S.lunch=true;if(S.scan) endScan();S.mental=Math.min(100,S.mental+15);
       $("titlebar").classList.add("lunch");$("saved").textContent="· 점심시간 🍚";
       toast("점심시간 피버! 🍚","팀장님 식사 중. 월급 마구 쏟아짐","",2500);SFX.lunch();
       setMsg("점심 피버 타임!");setFormula("=점심시간() * 2");
@@ -1460,7 +1719,7 @@ body.pre{background:#030504}
 
     // boss's meeting (Outlook)
     if(!S.mtgRem&&S.min>=890){S.mtgRem=1;notify({app:"outlook",kind:"reminder",who:"Outlook 일정",title:"Outlook 일정",subject:"🔔 [공유 일정] 팀장님 임원회의 · 10분 후",body:"15:00 – 15:30 · 대회의실",replies:[["다시 알림",null],["해제",null]],ms:5000});beep(784,.12,"sine",.05)}
-    const nowMtg=S.min>=900&&S.min<930;
+    const nowMtg=S.min>=900&&S.min<(S.mtgEnd||930);
     if(nowMtg&&!S.mtg){S.mtg=true;if(S.scan)endScan();hideToast();notify({app:"outlook",kind:"reminder",who:"Outlook 일정",title:"Outlook 일정",subject:"📅 팀장님 임원회의 시작",body:"30분간 감시 없음 🚪 지금이 기회",ms:3500});SFX.lunch();setMsg("팀장님 회의 중 · 마음껏 루팡")}
     else if(!nowMtg&&S.mtg){S.mtg=false;toast("팀장님","회의 끝났습니다~ 다들 자리로","warn",2000);S.phase="idle";S.phaseT=2}
 
@@ -1471,13 +1730,13 @@ body.pre{background:#030504}
     dopamineTick(dt);
     olTick(dt);
     if(S.app==="outlook"&&S.phase==="gaze"&&olDanger()) caught();
-    if(S.min>600&&!S.lunch){S.errT-=dt;if(S.errT<=0){spawnErr();S.errT=3+Math.random()*4}}
+    if(S.min>600&&!S.lunch){S.errT-=dt;if(S.errT<=0){spawnErr();S.errT=S.errBoost>0?.5:3+Math.random()*4}}
 
     // random chat
     if(S.phase==="idle"&&!S.lunch){S.chatT-=dt;if(S.chatT<=0){const m=CHATS[Math.floor(Math.random()*CHATS.length)];notify({app:m.app,kind:m.kind,subject:m.s,who:m.w,title:m.w,body:m.m,replies:m.r,fake:m.fake,ms:m.r?6500:3500});if(m.app==="outlook"){beep(784,.12,"sine",.05);setTimeout(()=>beep(988,.14,"sine",.05),130)}else{SFX.ping();setTimeout(()=>beep(1318,.09,"sine",.05),110)}S.chatT=7+Math.random()*7}}
 
     // boss sweep
-    if(!S.lunch&&!S.mtg){
+    if(!S.lunch&&!S.mtg&&!(S.maintEnd&&S.min<S.maintEnd)){
       S.phaseT-=dt;
       if(S.phase==="idle"&&S.phaseT<=0) startScan();
       else if(S.phase==="warn"&&S.phaseT<=0){
@@ -1510,22 +1769,27 @@ body.pre{background:#030504}
   function rank(s){return s>=2500000?"전설의 루팡":s>=1500000?"부장급 루팡":s>=800000?"과장급 루팡":s>=300000?"대리급 루팡":"신입 루팡"}
 
   function end(win){
+    if(S.ended&&!S.running) return;
+    $("evCard").hidden=true;$("evDim").hidden=true;S.paused=false;setTimeout(()=>{$("notifs").innerHTML=""},1600);document.body.classList.remove("sleepy");$("win").classList.remove("hang");
     S.running=false;S.ended=true;S.scan=null;setBoss(false);switchApp("excel",true);S.lunch=false;S.rush=0;S.magnet=0;$("win").classList.remove("rush");if(win)rain(180);
     $("titlebar").classList.remove("lunch");$("saved").textContent="· 자동 저장됨";
     $("win").classList.remove("alert");hideToast();
     win?SFX.lunch():SFX.bad();
     const prev=best(),isBest=S.score>prev;if(isBest)saveBest(S.score);
-    const n=$("note");
-    n.innerHTML='<div class="who">메모 · '+(win?"18:00 퇴근":"인사팀")+'</div>'+
-      '<h2>'+(win?"퇴근 성공! 🏃":"팀장님 면담 소환")+'</h2>'+
-      (win?"오늘 루팡한 월급":"면담 전까지 루팡한 월급")+
-      '<div class="big">'+won(S.score)+'</div>'+
-      '<div>직급: <b>'+rank(S.score)+'</b> · 최고 기록 '+won(Math.max(prev,S.score))+(isBest?" (신기록)":"")+'</div>'+
-      '<div class="row"><button class="btn" id="again">내일 또 출근</button><button class="btn ghost" id="copy">결과 복사</button></div>';
+    const n=$("note");const ek=endingKind(),E=ENDINGS[ek];
+    const rainLine=(ek!=="boss"&&ek!=="ot"&&!S.f.umbrella)?'<div style="margin-top:6px;color:#5d6661">…그리고 창밖에 소나기가 쏟아진다. 우산은 없다. ☔</div>':'';
+    n.innerHTML='<div class="who">ENDING · '+fmtTime(S.min)+'</div>'+
+      '<h2>'+E[0]+'</h2><div style="margin-bottom:6px">'+E[1]+'</div>'+rainLine+
+      '<div style="margin-top:8px">오늘 루팡한 월급</div><div class="big">'+won(S.score)+'</div>'+
+      '<div>직급: <b>'+rank(S.score)+'</b> · 멘탈 '+Math.round(S.mental)+' · 업무 진행률 '+Math.floor(Math.min(99,S.progress))+'%</div>'+
+      '<div>최고 기록 '+won(Math.max(prev,S.score))+(isBest?" (신기록)":"")+'</div>'+
+      '<div style="margin-top:10px;font-weight:900">이래도 내일 출근하시겠습니까?</div>'+
+      '<div class="row"><button class="btn" id="again">출근한다</button><button class="btn ghost" id="copy">결과 복사</button></div>';
+    S.lastEnding=E[0];
     n.hidden=false;
     $("again").onclick=showTitle;
     $("copy").onclick=async e=>{
-      const txt="월급루팡.xlsx에서 오늘 "+won(S.score)+" 루팡함 🥕 ("+rank(S.score)+") · by 딴짓연구소 @ttanjit.lab";
+      const txt="월급루팡.xlsx 엔딩: "+ENDINGS[endingKind()][0]+" · 오늘 "+won(S.score)+" 루팡함 🥕 ("+rank(S.score)+") · by 딴짓연구소 @ttanjit.lab";
       try{await navigator.clipboard.writeText(txt);e.target.textContent="복사됨"}catch(err){e.target.textContent="복사 실패"}
     };
     setMsg(win?"퇴근 완료":"면담 중…",!win);
@@ -1540,6 +1804,7 @@ body.pre{background:#030504}
     setBoss(false);setMsg("팀장님 자리 비움 · 루팡 가능");setFormula("=출근(09:00)");
     SFX.ping();spawnCoin();spawnCoin();render();
     if(r&&r.ok){
+      S.mental=Math.max(15,r.mental);S.nunchi=r.nunchi||50;S.f=Object.assign(S.f,r.f||{});
       if(!r.late){S.score+=10000;floatAt(S.pos.c,S.pos.r,"정시 출근 +₩10,000","combo");notify({who:"루팡봇",title:"루팡봇",body:r.arrive+" 정시 출근 성공! +₩10,000 ⏰",ms:2600})}
       else notify({who:"인사팀",title:"인사팀",body:"근태: "+r.arrive+" 출입 기록 확인됨 😅",ms:2800});
       if(r.mental>=70){S.score+=20000;setTimeout(()=>notify({who:"루팡봇",title:"루팡봇",body:"출근길 멘탈 "+r.mental+" 유지! 멘탈 보너스 +₩20,000 🧘",ms:2800}),900)}
